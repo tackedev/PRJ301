@@ -4,3 +4,4 @@ invalid=invalid.html
 =RemindUserServlet
 loginAction=LoginServlet
 searchAction=SearchAccountServlet
+logoutAction=LogoutServlet

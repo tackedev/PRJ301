@@ -12,6 +12,7 @@
         <title>Search</title>
     </head>
     <body>
+        <a href="logoutAction">Logout</a><br/>
         <font color="red">Welcome, ${sessionScope.USER.lastName}</font>
         <h1>Search page</h1>
         <form action="searchAction">

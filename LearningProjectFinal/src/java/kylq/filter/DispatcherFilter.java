@@ -50,7 +50,7 @@ public class DispatcherFilter implements Filter {
         
         // set some header for responseObj
         httpResponse.setContentType("text/html;charset=UTF-8");
-        httpResponse.setHeader("Control-cache", "no-cache, no-store");
+        httpResponse.setHeader("Cache-control", "no-cache, no-store");
         
         //get roadmap from Application Scope
         ServletContext context = httpRequest.getServletContext();
@@ -65,7 +65,7 @@ public class DispatcherFilter implements Filter {
             RequestDispatcher rd = httpRequest.getRequestDispatcher(resource);
             rd.forward(request, response);
         } else {
-            httpResponse.sendError(httpResponse.SC_NOT_FOUND); // send 404 Page not found error
+            httpResponse.sendError(HttpServletResponse.SC_NOT_FOUND); // send 404 Page not found error
         }
         
     }

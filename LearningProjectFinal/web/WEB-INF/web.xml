@@ -32,6 +32,10 @@
         <servlet-name>SearchAccountServlet</servlet-name>
         <servlet-class>kylq.controller.SearchAccountServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>kylq.controller.LogoutServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RemindUserServlet</servlet-name>
         <url-pattern>/RemindUserServlet</url-pattern>
@@ -43,6 +47,10 @@
     <servlet-mapping>
         <servlet-name>SearchAccountServlet</servlet-name>
         <url-pattern>/SearchAccountServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/LogoutServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
