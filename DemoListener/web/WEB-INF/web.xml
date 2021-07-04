@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <listener>
+        <description>RequestListener</description>
+        <listener-class>tackedev.listener.MyRequestListener</listener-class>
+    </listener>
+    <listener>
+        <description>RequestAttributeListener</description>
+        <listener-class>tackedev.listener.MyRequestAttributeListener</listener-class>
+    </listener>
+    <listener>
+        <description>ServletContextListener</description>
+        <listener-class>tackedev.listener.MyContextListener</listener-class>
+    </listener>
+    <listener>
+        <description>HttpSessionListener</description>
+        <listener-class>tackedev.listener.MySessionListener</listener-class>
+    </listener>
+    <servlet>
+        <servlet-name>RequestListenerServlet</servlet-name>
+        <servlet-class>tackedev.controller.RequestListenerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RequestListenerServlet</servlet-name>
+        <url-pattern>/RequestListenerServlet</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+</web-app>

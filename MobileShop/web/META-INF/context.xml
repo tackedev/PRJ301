@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/MobileShop">
+    <Resource name="Database" type="javax.sql.DataSource" auth="Container"
+    url="jdbc:sqlserver://localhost:1433;databaseName=MobileShop"
+    driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+    username="sa" password="Admim123" />
+</Context>

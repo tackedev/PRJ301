@@ -1,0 +1,5 @@
+=RemindUserServlet
+login=login.html
+home=home.jsp
+loginAction=LoginServlet
+logoutAction=LogoutServlet
