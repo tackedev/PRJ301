@@ -6,16 +6,25 @@
 package kylq.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import kylq.registration.RegistrationDAO;
+import kylq.registration.RegistrationDTO;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author tackedev
  */
 public class LoginServlet extends HttpServlet {
+    
+    private final Logger LOGGER = Logger.getLogger(LoginServlet.class);
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -28,14 +37,36 @@ public class LoginServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
         
+        String url = "invalid";
         
+        String username = request.getParameter("txtUsername");
+        String password = request.getParameter("txtPassword");
         
         try {
+            // call DAO for getRegistration
+            RegistrationDAO dao = new RegistrationDAO();
+            RegistrationDTO dto = dao.getRegistrationByUsernameAndPassword(username, password);
             
+            if (dto != null) {
+                url = "search";
+                
+                // Create new session and add RegistrationDTO attribute
+                HttpSession session = request.getSession();
+                session.setAttribute("USER", dto);
+                
+                //create account cookie for remind user
+                Cookie cookie = new Cookie(username, password);
+                cookie.setMaxAge(-1);   //means cookie existing until close browser
+                response.addCookie(cookie);
+            }//end dto has existed
+        } catch (NamingException ex) {
+            LOGGER.error(ex);
+        } catch (SQLException ex) {
+            LOGGER.error(ex);
         } finally {
-            
+            response.sendRedirect(url);
+            //using sendRedirect to send cookie to browser
         }
     }
 

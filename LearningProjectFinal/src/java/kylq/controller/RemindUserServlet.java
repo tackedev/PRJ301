@@ -6,17 +6,25 @@
 package kylq.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.SQLException;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import kylq.registration.RegistrationDAO;
+import kylq.registration.RegistrationDTO;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author tackedev
  */
 public class RemindUserServlet extends HttpServlet {
+    
+    private final Logger LOGGER = Logger.getLogger(RemindUserServlet.class);
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -29,19 +37,38 @@ public class RemindUserServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet RemindUserServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet RemindUserServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        
+        String url = "login";
+        
+        Cookie[] cookies = request.getCookies();
+        
+        try {
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    String username = cookie.getName();
+                    String password = cookie.getValue();
+
+                    //call DAO for getRegistration
+                    RegistrationDAO dao = new RegistrationDAO();
+                    RegistrationDTO dto = dao.getRegistrationByUsernameAndPassword(username, password);
+
+                    if (dto != null) {
+                        url = "search";
+
+                        // Create new session and add RegistrationDTO attribute
+                        HttpSession session = request.getSession();
+                        session.setAttribute("USER", dto);
+                    }//end dto has existed
+                }//end traverse cookies
+            }//end cookies have existed
+        } catch (NamingException ex) {
+            LOGGER.error(ex);
+        } catch (SQLException ex) {
+            LOGGER.error(ex);
+        } finally {
+            response.sendRedirect(url);
         }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -12,7 +12,7 @@
         <title>Search</title>
     </head>
     <body>
-        <font color="red">Welcome,</font>
+        <font color="red">Welcome, ${sessionScope.USER.lastName}</font>
         <h1>Search page</h1>
         <form action="searchAction">
             Search <input type="text" name="txtSearch" value="" />
