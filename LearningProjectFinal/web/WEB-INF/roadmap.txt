@@ -1,0 +1,6 @@
+login=login.html
+search=search.jsp
+invalid=invalid.html
+=RemindUserServlet
+loginAction=LoginServlet
+searchAction=SearchAccountServlet
