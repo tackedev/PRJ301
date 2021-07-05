@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.naming.NamingException;
 import kylq.utils.DBHelpers;
 
@@ -101,5 +103,58 @@ public class RegistrationDAO implements Serializable {
             } 
         }
         return false;
+    }
+    
+    public List<RegistrationDTO> getRegistrationsByLastName(String searchValue) throws NamingException, SQLException {
+        List<RegistrationDTO> result = null;
+        
+        Connection con = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        
+        try {
+            //1. get connection
+            con = DBHelpers.getConnection();
+            if (con != null) {
+                //2. Create sql String
+                String sql = "Select username, password, lastName, isAdmin as role "
+                           + "From Registration "
+                           + "Where lastName Like ?";
+                //3. Create statmement
+                stm = con.prepareStatement(sql);
+                stm.setString(1, "%" + searchValue + "%");
+                //4. Execute Statement
+                rs = stm.executeQuery();
+                while (rs.next()) {
+                    //get all fields
+                    String username = rs.getString("username");
+                    String password = rs.getString("password");
+                    String lastName = rs.getString("lastName");
+                    Boolean role = rs.getBoolean("role");
+                    
+                    //create DTO to store result
+                    RegistrationDTO dto = new RegistrationDTO(username, password, lastName, role);
+                    
+                    //check exist result list
+                    if (result == null) {
+                        result = new ArrayList<>();
+                    }
+                    
+                    result.add(dto);
+                }
+            }
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        
+        return result;
     }
 }

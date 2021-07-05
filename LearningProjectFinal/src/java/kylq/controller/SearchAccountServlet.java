@@ -6,17 +6,26 @@
 package kylq.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import javax.naming.NamingException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import kylq.registration.RegistrationDAO;
+import kylq.registration.RegistrationDTO;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author tackedev
  */
 public class SearchAccountServlet extends HttpServlet {
+    
+    private final Logger LOGGER = Logger.getLogger(SearchAccountServlet.class);
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -29,19 +38,33 @@ public class SearchAccountServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet SearchAccountServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet SearchAccountServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        
+        String url = "search";
+        
+        String searchValue = request.getParameter("txtSearch");
+        //request.setAttribute("LAST_SEARCH_VALUE", searchValue);
+        
+        try {
+            if (!searchValue.trim().isEmpty()) {
+                //call DAO then call getRegistrationByLastName
+                RegistrationDAO dao = new RegistrationDAO();
+                List<RegistrationDTO> result = dao.getRegistrationsByLastName(searchValue);
+                
+                //set result to request Scope
+                request.setAttribute("SEARCH_RESULT", result);
+            }
+        } catch (NamingException ex) {
+            LOGGER.error(ex);
+        } catch (SQLException ex) {
+            LOGGER.error(ex);
+        } finally {
+            //Get roadmap form apllication scope
+            Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
+            
+            RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
+            rd.forward(request, response);
         }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
