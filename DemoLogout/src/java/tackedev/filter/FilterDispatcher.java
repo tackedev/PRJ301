@@ -30,7 +30,10 @@ public class FilterDispatcher implements Filter {
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
     // configured. 
-    private FilterConfig filterConfig = null;
+    private FilterConfig filter
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.RequestDispatConfig = null;
     
     public FilterDispatcher() {
     }    
