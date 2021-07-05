@@ -19,9 +19,9 @@ import org.apache.log4j.Logger;
  *
  * @author tackedev
  */
-public class DeleteServlet extends HttpServlet {
+public class UpdateAccountServlet extends HttpServlet {
     
-    private final Logger LOGGER = Logger.getLogger(DeleteServlet.class);
+    private final Logger LOGGER = Logger.getLogger(UpdateAccountServlet.class);
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,39 +35,28 @@ public class DeleteServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String searchValue = request.getParameter("txtSearch");
         String username = request.getParameter("txtUsername");
+        String password = request.getParameter("txtPassword");
+        Boolean role = request.getParameter("chkRole") != null;
         
-        String url = "searchAction"
-                    + "?txtSearch=" + searchValue;
+        String lastSearchValue = request.getParameter("txtSearch");
+        String url = "searchAccountAction"
+                   + "?txtSearch=" + lastSearchValue;
         
         try {
-            // Call DAO then call deleteRegistration
+            // Call DAO then updateRegistration
             RegistrationDAO dao = new RegistrationDAO();
-            if (dao.deleteRegistration(username)) {
-                //delete successfully, reload Search page
-            } else {
-//                //delete fail, forward to errors page
-//                request.setAttribute("NOTIFICATION", "Some errors occur when delete this user. Please try again later!");
-//                request.setAttribute("PREVIOUS_PAGE", url);
-//                url = "errors";
+            if (dao.updateRegistration(username, password, role)) {
+                
             }
         } catch (NamingException ex) {
             LOGGER.error(ex);
         } catch (SQLException ex) {
             LOGGER.error(ex);
         } finally {
-//            if (url.equals("errors")) {
-//                //get roadmap from application scope
-//                Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
-//                
-//                RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
-//                rd.forward(request, response);
-//            } else {
-//                response.sendRedirect(url);
-//            }
             response.sendRedirect(url);
         }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

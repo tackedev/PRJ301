@@ -20,7 +20,7 @@
 
         <c:set var="searchValue" value="${param.txtSearch}" />
 
-        <form action="searchAction">
+        <form action="searchAccountAction">
             Search <input type="text" name="txtSearch" value="${searchValue}" />
             <input type="submit" value="Search" />
         </form><br/>
@@ -37,21 +37,23 @@
                             <th>Full Name</th>
                             <th>Role</th>
                             <th>Delete</th>
-<!--                            <th>Update</th>
-                            <th>Edit</th>-->
+                            <th>Update</th>
+                            <!--                            <th>Edit</th>-->
                         </tr>
                     </thead>
                     <tbody>
                         <c:forEach var="dto" items="${result}" varStatus="counter" >
+                        <form action="updateAccountAction" method="POST">
                             <tr>
                                 <td>
                                     ${counter.count}
                                 </td>
                                 <td>
                                     ${dto.username}
+                                    <input type="hidden" name="txtUsername" value="${dto.username}" />
                                 </td>
                                 <td>
-                                    ${dto.password}
+                                    <input type="text" name="txtPassword" value="${dto.password}" />
                                 </td>
                                 <td>
                                     ${dto.lastName}
@@ -64,20 +66,25 @@
                                            />
                                 </td>
                                 <td>
-                                    <c:url var="deleteLink" value="delete">
+                                    <c:url var="deleteLink" value="deleteAccountAction">
                                         <c:param name="txtUsername" value="${dto.username}" />
                                         <c:param name="txtSearch" value="${searchValue}" />
                                     </c:url>
                                     <a href="${deleteLink}">Delete</a>
                                 </td>
+                                <td>
+                                    <input type="hidden" name="txtSearch" value="${searchValue}" />
+                                    <input type="submit" value="Update" />
+                                </td>
                             </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
-            </c:if>
-            <c:if test="${empty result}" >
-                <h2>No record is matched!!!</h2>
-            </c:if>
+                        </form>
+                    </c:forEach>
+                </tbody>
+            </table>
         </c:if>
-    </body>
+        <c:if test="${empty result}" >
+            <h2>No record is matched!!!</h2>
+        </c:if>
+    </c:if>
+</body>
 </html>

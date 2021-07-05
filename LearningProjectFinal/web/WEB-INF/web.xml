@@ -25,13 +25,15 @@
         <url-pattern>/search.jsp</url-pattern>
         <url-pattern>/SearchAccountServlet</url-pattern>
         <url-pattern>/LogoutServlet</url-pattern>
-        <url-pattern>/DeleteServlet</url-pattern>
+        <url-pattern>/DeleteAccountServlet</url-pattern>
+        <url-pattern>/UpdateAccountServlet</url-pattern>
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
     <listener>
         <description>ServletContextListener</description>
         <listener-class>kylq.listener.ContextListener</listener-class>
     </listener>
+    
     <servlet>
         <servlet-name>RemindUserServlet</servlet-name>
         <servlet-class>kylq.controller.RemindUserServlet</servlet-class>
@@ -53,9 +55,14 @@
         <servlet-class>kylq.controller.RegisterServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>DeleteServlet</servlet-name>
-        <servlet-class>kylq.controller.DeleteServlet</servlet-class>
+        <servlet-name>DeleteAccountServlet</servlet-name>
+        <servlet-class>kylq.controller.DeleteAccountServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UpdateAccountServlet</servlet-name>
+        <servlet-class>kylq.controller.UpdateAccountServlet</servlet-class>
+    </servlet>
+    
     <servlet-mapping>
         <servlet-name>RemindUserServlet</servlet-name>
         <url-pattern>/RemindUserServlet</url-pattern>
@@ -77,8 +84,12 @@
         <url-pattern>/RegisterServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>DeleteServlet</servlet-name>
-        <url-pattern>/DeleteServlet</url-pattern>
+        <servlet-name>DeleteAccountServlet</servlet-name>
+        <url-pattern>/DeleteAccountServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateAccountServlet</servlet-name>
+        <url-pattern>/UpdateAccountServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

@@ -7,25 +7,21 @@ package kylq.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 import javax.naming.NamingException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import kylq.registration.RegistrationDAO;
-import kylq.registration.RegistrationDTO;
 import org.apache.log4j.Logger;
 
 /**
  *
  * @author tackedev
  */
-public class SearchAccountServlet extends HttpServlet {
+public class DeleteAccountServlet extends HttpServlet {
     
-    private final Logger LOGGER = Logger.getLogger(SearchAccountServlet.class);
+    private final Logger LOGGER = Logger.getLogger(DeleteAccountServlet.class);
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,31 +35,39 @@ public class SearchAccountServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String url = "search";
+        String lastSearchValue = request.getParameter("txtSearch");
+        String username = request.getParameter("txtUsername");
         
-        String searchValue = request.getParameter("txtSearch");
+        String url = "searchAccountAction"
+                    + "?txtSearch=" + lastSearchValue;
         
         try {
-            if (!searchValue.trim().isEmpty()) {
-                //call DAO then call getRegistrationByLastName
-                RegistrationDAO dao = new RegistrationDAO();
-                List<RegistrationDTO> result = dao.getRegistrationsByLastName(searchValue);
-                
-                //set result to request Scope
-                request.setAttribute("SEARCH_RESULT", result);
+            // Call DAO then call deleteRegistration
+            RegistrationDAO dao = new RegistrationDAO();
+            if (dao.deleteRegistration(username)) {
+                //delete successfully, reload Search page
+            } else {
+//                //delete fail, forward to errors page
+//                request.setAttribute("NOTIFICATION", "Some errors occur when delete this user. Please try again later!");
+//                request.setAttribute("PREVIOUS_PAGE", url);
+//                url = "errors";
             }
         } catch (NamingException ex) {
             LOGGER.error(ex);
         } catch (SQLException ex) {
             LOGGER.error(ex);
         } finally {
-            //Get roadmap form apllication scope
-            Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
-            
-            RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
-            rd.forward(request, response);
+//            if (url.equals("errors")) {
+//                //get roadmap from application scope
+//                Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
+//                
+//                RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
+//                rd.forward(request, response);
+//            } else {
+//                response.sendRedirect(url);
+//            }
+            response.sendRedirect(url);
         }
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
