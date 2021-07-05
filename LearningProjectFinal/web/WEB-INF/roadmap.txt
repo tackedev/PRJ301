@@ -5,3 +5,6 @@ invalid=invalid.html
 loginAction=LoginServlet
 searchAction=SearchAccountServlet
 logoutAction=LogoutServlet
+registerAction=RegisterServlet
+register=register.html
+registerPage=register.jsp
