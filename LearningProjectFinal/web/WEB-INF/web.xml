@@ -23,6 +23,9 @@
     <filter-mapping>
         <filter-name>AuthenticationFilter</filter-name>
         <url-pattern>/search.jsp</url-pattern>
+        <url-pattern>/SearchAccountServlet</url-pattern>
+        <url-pattern>/LogoutServlet</url-pattern>
+        <url-pattern>/DeleteServlet</url-pattern>
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
     <listener>
@@ -49,6 +52,10 @@
         <servlet-name>RegisterServlet</servlet-name>
         <servlet-class>kylq.controller.RegisterServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DeleteServlet</servlet-name>
+        <servlet-class>kylq.controller.DeleteServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RemindUserServlet</servlet-name>
         <url-pattern>/RemindUserServlet</url-pattern>
@@ -68,6 +75,10 @@
     <servlet-mapping>
         <servlet-name>RegisterServlet</servlet-name>
         <url-pattern>/RegisterServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteServlet</servlet-name>
+        <url-pattern>/DeleteServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

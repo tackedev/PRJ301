@@ -36,9 +36,9 @@
                             <th>Password</th>
                             <th>Full Name</th>
                             <th>Role</th>
-                            <!--                        <th>Delete</th>
-                                                    <th>Update</th>
-                                                    <th>Edit</th>-->
+                            <th>Delete</th>
+<!--                            <th>Update</th>
+                            <th>Edit</th>-->
                         </tr>
                     </thead>
                     <tbody>
@@ -62,6 +62,13 @@
                                                checked="checked"
                                            </c:if>
                                            />
+                                </td>
+                                <td>
+                                    <c:url var="deleteLink" value="delete">
+                                        <c:param name="txtUsername" value="${dto.username}" />
+                                        <c:param name="txtSearch" value="${searchValue}" />
+                                    </c:url>
+                                    <a href="${deleteLink}">Delete</a>
                                 </td>
                             </tr>
                         </c:forEach>

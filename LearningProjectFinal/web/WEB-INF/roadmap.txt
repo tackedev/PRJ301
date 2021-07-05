@@ -8,3 +8,5 @@ logoutAction=LogoutServlet
 registerAction=RegisterServlet
 register=register.html
 registerPage=register.jsp
+delete=DeleteServlet
+errors=errors.jsp
