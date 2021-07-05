@@ -40,7 +40,6 @@ public class ContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     private void configLog4j(ServletContext context) {
