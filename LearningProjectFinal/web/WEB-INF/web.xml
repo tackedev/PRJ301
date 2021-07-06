@@ -27,13 +27,17 @@
         <url-pattern>/LogoutServlet</url-pattern>
         <url-pattern>/DeleteAccountServlet</url-pattern>
         <url-pattern>/UpdateAccountServlet</url-pattern>
+        <url-pattern>/EditAccountServlet</url-pattern>
+        <url-pattern>/editAccount.jsp</url-pattern>
+        <url-pattern>/ConfirmEditServlet</url-pattern>
+        <url-pattern>/confirmEdit.html</url-pattern>
+        <url-pattern>/UpdateEditServlet</url-pattern>
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
     <listener>
         <description>ServletContextListener</description>
         <listener-class>kylq.listener.ContextListener</listener-class>
     </listener>
-    
     <servlet>
         <servlet-name>RemindUserServlet</servlet-name>
         <servlet-class>kylq.controller.RemindUserServlet</servlet-class>
@@ -62,7 +66,18 @@
         <servlet-name>UpdateAccountServlet</servlet-name>
         <servlet-class>kylq.controller.UpdateAccountServlet</servlet-class>
     </servlet>
-    
+    <servlet>
+        <servlet-name>EditAccountServlet</servlet-name>
+        <servlet-class>kylq.controller.EditAccountServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ConfirmEditServlet</servlet-name>
+        <servlet-class>kylq.controller.ConfirmEditServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateEditServlet</servlet-name>
+        <servlet-class>kylq.controller.UpdateEditServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RemindUserServlet</servlet-name>
         <url-pattern>/RemindUserServlet</url-pattern>
@@ -90,6 +105,18 @@
     <servlet-mapping>
         <servlet-name>UpdateAccountServlet</servlet-name>
         <url-pattern>/UpdateAccountServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditAccountServlet</servlet-name>
+        <url-pattern>/EditAccountServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ConfirmEditServlet</servlet-name>
+        <url-pattern>/ConfirmEditServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateEditServlet</servlet-name>
+        <url-pattern>/UpdateEditServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

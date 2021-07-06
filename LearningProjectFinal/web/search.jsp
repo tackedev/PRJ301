@@ -38,7 +38,7 @@
                             <th>Role</th>
                             <th>Delete</th>
                             <th>Update</th>
-                            <!--                            <th>Edit</th>-->
+                            <th>Edit</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -76,7 +76,14 @@
                                     <input type="hidden" name="txtSearch" value="${searchValue}" />
                                     <input type="submit" value="Update" />
                                 </td>
+                                <td>
+                                    <input type="submit" value="Edit" form="editAccountForm${counter.count}" />
+                                </td>
                             </tr>
+                        </form>
+                        <form id="editAccountForm${counter.count}" action="editAccount">
+                            <input type="hidden" name="txtUsername" value="${dto.username}" />
+                            <input type="hidden" name="txtSearch" value="${searchValue}" />
                         </form>
                     </c:forEach>
                 </tbody>

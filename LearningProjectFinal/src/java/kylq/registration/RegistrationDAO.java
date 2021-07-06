@@ -223,4 +223,84 @@ public class RegistrationDAO implements Serializable {
         }
         return false;
     }
+    
+    public boolean updateEditRegistration(RegistrationDTO dto) throws NamingException, SQLException {
+        Connection con = null;
+        PreparedStatement stm = null;
+        
+        try {
+            //1. Get connection
+            con = DBHelpers.getConnection();
+            if (con != null) {
+                //2. create sql string
+                String sql = "Update Registration "
+                           + "Set password=?, lastName=?, isAdmin=? "
+                           + "Where username=?";
+                //3. Create statement
+                stm = con.prepareStatement(sql);
+                stm.setString(1, dto.getPassword());
+                stm.setString(2, dto.getLastName());
+                stm.setBoolean(3, dto.isRole());
+                stm.setString(4, dto.getUsername());
+                //4. Execute
+                int row = stm.executeUpdate();
+                //5. Process
+                if (row > 0) {
+                    return true;
+                }
+            }
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return false;
+    }
+    
+    public RegistrationDTO getRegistrationByUsername(String username) throws NamingException, SQLException {
+        Connection con = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        
+        try {
+            //1. Get connection
+            con = DBHelpers.getConnection();
+            if (con != null) {
+                //2. Create sql string
+                String sql = "Select password, lastName, isAdmin as role "
+                           + "From Registration "
+                           + "Where username=?";
+                //3. Create statement
+                stm = con.prepareStatement(sql);
+                stm.setString(1, username);
+                //4. Execute
+                rs = stm.executeQuery();
+                //5. Process
+                if (rs.next()) {
+                    //get all fields
+                    String password = rs.getString("password");
+                    String lastName = rs.getString("lastName");
+                    Boolean role = rs.getBoolean("role");
+                    
+                    //Create DTO
+                    RegistrationDTO dto = new RegistrationDTO(username, password, lastName, role);
+                    return dto;
+                }
+            }
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return null;
+    }
 }
