@@ -7,12 +7,16 @@ package kylq.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 import javax.naming.NamingException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import kylq.registration.RegistrationDAO;
+import kylq.registration.RegistrationInsertError;
 import org.apache.log4j.Logger;
 
 /**
@@ -40,21 +44,31 @@ public class UpdateAccountServlet extends HttpServlet {
         Boolean role = request.getParameter("chkRole") != null;
         
         String lastSearchValue = request.getParameter("txtSearch");
-        String url = "searchAccountAction"
-                   + "?txtSearch=" + lastSearchValue;
         
         try {
-            // Call DAO then updateRegistration
-            RegistrationDAO dao = new RegistrationDAO();
-            if (dao.updateRegistration(username, password, role)) {
-                
+            //validation input
+            //password (6 - 30 chars)
+            if (password.length() < 6 || 30 < password.length()) {
+                RegistrationInsertError errors = new RegistrationInsertError();
+                errors.setPasswordLengthErr("Password is required from 6 to 30 characters");
+                request.setAttribute("INSERT_ERRORS", errors);
+            } else {
+                // Call DAO then updateRegistration
+                RegistrationDAO dao = new RegistrationDAO();
+                if (dao.updateRegistration(username, password, role)) {
+                    //do nothing
+                }
             }
-        } catch (NamingException ex) {
-            LOGGER.error(ex);
-        } catch (SQLException ex) {
+        } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
         } finally {
-            response.sendRedirect(url);
+            //get roadmap from application scope
+            Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
+            
+            String url = roadmap.get("searchAccountAction")
+                   + "?txtSearch=" + lastSearchValue;
+            RequestDispatcher rd = request.getRequestDispatcher(url);
+            rd.forward(request, response);
         }
         
     }

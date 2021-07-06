@@ -54,6 +54,12 @@
                                 </td>
                                 <td>
                                     <input type="text" name="txtPassword" value="${dto.password}" />
+                                    <c:if test="${not empty requestScope.INSERT_ERRORS}" >
+                                        <c:if test="${dto.username eq param.txtUsername}">
+                                            <br/>
+                                            <font color="red">${requestScope.INSERT_ERRORS.passwordLengthErr}</font>
+                                        </c:if>
+                                    </c:if>
                                 </td>
                                 <td>
                                     ${dto.lastName}
