@@ -49,7 +49,7 @@
                         <form action="updateAccountAction" method="POST">
                             <tr>
                                 <td>
-                                    ${counter.count}
+                                    ${counter.count}.
                                 </td>
                                 <td>
                                     ${dto.username}
