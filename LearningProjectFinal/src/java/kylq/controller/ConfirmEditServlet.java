@@ -43,7 +43,7 @@ public class ConfirmEditServlet extends HttpServlet {
         
         //get edited dto
         RegistrationDTO dto = new RegistrationDTO(username, password, lastName, role);
-        //Replace EDIT_USER in session scope
+        //Replace old EDIT_USER in session scope
         HttpSession session = request.getSession();
         session.setAttribute("EDIT_USER", dto);
         

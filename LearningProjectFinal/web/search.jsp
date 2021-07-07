@@ -83,7 +83,6 @@
                                     <input type="submit" value="Update" />
                                 </td>
                                 <td>
-                                    <%--<input type="submit" value="Edit" form="editAccountForm${counter.count}" />--%>
                                     <c:url var="editLink" value="editAccount" >
                                         <c:param name="txtUsername" value="${dto.username}" />
                                         <c:param name="txtSearch" value="${searchValue}" />
@@ -94,10 +93,6 @@
                                 </td>
                             </tr>
                         </form>
-                        <%--<form id="editAccountForm${counter.count}" action="editAccount">
-                            <input type="hidden" name="txtUsername" value="${dto.username}" />
-                            <input type="hidden" name="txtSearch" value="${searchValue}" />
-                        </form>--%>
                     </c:forEach>
                 </tbody>
             </table>

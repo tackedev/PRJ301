@@ -37,35 +37,29 @@ public class UpdateEditServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String button = request.getParameter("btnAction");
+        HttpSession session = request.getSession();
+        //get LAST_SEARCH_VALUE from session scope
+        String lastSearchValue = (String) session.getAttribute("LAST_SEARCH_VALUE");
         
-        String url = "editAccountPage";
+        String url = "searchAccountAction?txtSearch=" + lastSearchValue;
         
         try {
-            if (button.equals("Confirm")) {
-                //Call DAO to update 
-                RegistrationDAO dao = new RegistrationDAO();
-                //get EDIT_USER from session scope
-                HttpSession session = request.getSession();
-                RegistrationDTO dto = (RegistrationDTO) session.getAttribute("EDIT_USER");
-                if (dao.updateEditRegistration(dto)) {
-                    //get LAST_SEARCH_VALUE from session scope
-                    String lastSearchValue = (String) session.getAttribute("LAST_SEARCH_VALUE");
-                    
-                    url = "searchAccountAction?txtSearch=" + lastSearchValue;
-                    
-                    //clear EDIT_USER and LAST_SEARCH_VALUE attribute in session scope
-                    session.removeAttribute("EDIT_USER");
-                    session.removeAttribute("LAST_SEARCH_VALUE");
-                }//end update successfully
-            }
+            //Call DAO to update 
+            RegistrationDAO dao = new RegistrationDAO();
+            //get EDIT_USER from session scope
+            RegistrationDTO dto = (RegistrationDTO) session.getAttribute("EDIT_USER");
+            
+            if (dao.updateEditRegistration(dto)) {
+                //clear EDIT_USER and LAST_SEARCH_VALUE attribute in session scope
+                session.removeAttribute("EDIT_USER");
+                session.removeAttribute("LAST_SEARCH_VALUE");
+            }//end update successfully
         } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
             response.sendError(500);
         } finally {
             response.sendRedirect(url);
         }
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
