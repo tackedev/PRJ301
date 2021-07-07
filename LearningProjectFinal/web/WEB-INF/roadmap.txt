@@ -15,3 +15,5 @@ editAccountPage=editAccount.jsp
 confirmEdit=ConfirmEditServlet
 confirmEditPage=confirmEdit.html
 updateEditAction=UpdateEditServlet
+shop=LoadShopServlet
+shopPage=shop.jsp

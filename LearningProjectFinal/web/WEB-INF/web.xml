@@ -78,6 +78,10 @@
         <servlet-name>UpdateEditServlet</servlet-name>
         <servlet-class>kylq.controller.UpdateEditServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LoadShopServlet</servlet-name>
+        <servlet-class>kylq.controller.LoadShopServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RemindUserServlet</servlet-name>
         <url-pattern>/RemindUserServlet</url-pattern>
@@ -117,6 +121,10 @@
     <servlet-mapping>
         <servlet-name>UpdateEditServlet</servlet-name>
         <url-pattern>/UpdateEditServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoadShopServlet</servlet-name>
+        <url-pattern>/LoadShopServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
