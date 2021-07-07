@@ -22,6 +22,8 @@ import org.apache.log4j.Logger;
 public class DeleteAccountServlet extends HttpServlet {
     
     private final Logger LOGGER = Logger.getLogger(DeleteAccountServlet.class);
+    
+    private final String SEARCH_ACCOUNT_CONTROLLER = "searchAccountAction";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,20 +40,18 @@ public class DeleteAccountServlet extends HttpServlet {
         String lastSearchValue = request.getParameter("txtSearch");
         String username = request.getParameter("txtUsername");
         
-        String url = "searchAccountAction"
-                    + "?txtSearch=" + lastSearchValue;
-        
         try {
             // Call DAO then call deleteRegistration
             RegistrationDAO dao = new RegistrationDAO();
             if (dao.deleteRegistration(username)) {
                 //delete successfully, reload Search page
             }
-        } catch (NamingException ex) {
+        } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
-        } catch (SQLException ex) {
-            LOGGER.error(ex);
+            response.sendError(500);
         } finally {
+            String url = SEARCH_ACCOUNT_CONTROLLER
+                    + "?txtSearch=" + lastSearchValue;
             response.sendRedirect(url);
         }
     }

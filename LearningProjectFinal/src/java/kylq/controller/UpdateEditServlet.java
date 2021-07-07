@@ -24,6 +24,8 @@ import org.apache.log4j.Logger;
 public class UpdateEditServlet extends HttpServlet {
     
     private final Logger LOGGER = Logger.getLogger(UpdateEditServlet.class);
+    
+    private final String SEARCH_ACCOUNT_CONTROLLER = "searchAccountAction";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,7 +43,8 @@ public class UpdateEditServlet extends HttpServlet {
         //get LAST_SEARCH_VALUE from session scope
         String lastSearchValue = (String) session.getAttribute("LAST_SEARCH_VALUE");
         
-        String url = "searchAccountAction?txtSearch=" + lastSearchValue;
+        String url = SEARCH_ACCOUNT_CONTROLLER 
+                + "?txtSearch=" + lastSearchValue;
         
         try {
             //Call DAO to update 

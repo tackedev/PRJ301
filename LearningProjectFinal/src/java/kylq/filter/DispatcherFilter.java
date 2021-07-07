@@ -65,7 +65,7 @@ public class DispatcherFilter implements Filter {
             RequestDispatcher rd = httpRequest.getRequestDispatcher(resource);
             rd.forward(request, response);
         } else {
-            httpResponse.sendError(HttpServletResponse.SC_NOT_FOUND); // send 404 Page not found error
+            httpResponse.sendError(404);
         }
         
     }

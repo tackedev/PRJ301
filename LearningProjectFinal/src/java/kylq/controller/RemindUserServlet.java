@@ -25,6 +25,9 @@ import org.apache.log4j.Logger;
 public class RemindUserServlet extends HttpServlet {
     
     private final Logger LOGGER = Logger.getLogger(RemindUserServlet.class);
+    
+    private final String LOGIN_PAGE = "login";
+    private final String SEARCH_PAGE = "search";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,7 +41,7 @@ public class RemindUserServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String url = "login";
+        String url = LOGIN_PAGE;
         
         Cookie[] cookies = request.getCookies();
         
@@ -53,7 +56,7 @@ public class RemindUserServlet extends HttpServlet {
                     RegistrationDTO dto = dao.getRegistrationByUsernameAndPassword(username, password);
 
                     if (dto != null) {
-                        url = "search";
+                        url = SEARCH_PAGE;
 
                         // Create new session and add RegistrationDTO attribute
                         HttpSession session = request.getSession();
@@ -61,10 +64,9 @@ public class RemindUserServlet extends HttpServlet {
                     }//end dto has existed
                 }//end traverse cookies
             }//end cookies have existed
-        } catch (NamingException ex) {
+        } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
-        } catch (SQLException ex) {
-            LOGGER.error(ex);
+            response.sendError(500);
         } finally {
             response.sendRedirect(url);
         }

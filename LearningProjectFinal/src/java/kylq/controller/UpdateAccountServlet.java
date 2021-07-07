@@ -14,7 +14,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import kylq.registration.RegistrationDAO;
 import kylq.registration.RegistrationInsertError;
 import org.apache.log4j.Logger;
@@ -26,6 +25,8 @@ import org.apache.log4j.Logger;
 public class UpdateAccountServlet extends HttpServlet {
     
     private final Logger LOGGER = Logger.getLogger(UpdateAccountServlet.class);
+    
+    private final String SEARCH_ACCOUNT_CONTROLLER = "searchAccountAction";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -61,11 +62,12 @@ public class UpdateAccountServlet extends HttpServlet {
             }
         } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
+            response.sendError(500);
         } finally {
             //get roadmap from application scope
             Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
             
-            String url = roadmap.get("searchAccountAction")
+            String url = roadmap.get(SEARCH_ACCOUNT_CONTROLLER)
                    + "?txtSearch=" + lastSearchValue;
             RequestDispatcher rd = request.getRequestDispatcher(url);
             rd.forward(request, response);

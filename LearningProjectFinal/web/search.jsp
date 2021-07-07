@@ -14,7 +14,10 @@
     </head>
     <body>
         <a href="logoutAction">Logout</a><br/>
-        <font color="red">Welcome, ${sessionScope.USER.lastName}</font>
+
+        <c:if test="${not empty sessionScope.USER.lastName}" >
+            <font color="red">Welcome, ${sessionScope.USER.lastName}</font>
+        </c:if>
 
         <h1>Search page</h1>
 

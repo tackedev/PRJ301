@@ -25,6 +25,9 @@ import org.apache.log4j.Logger;
 public class LoginServlet extends HttpServlet {
     
     private final Logger LOGGER = Logger.getLogger(LoginServlet.class);
+    
+    private final String INVALID_PAGE = "invalid";
+    private final String SEARCH_PAGE = "search";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,7 +41,7 @@ public class LoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String url = "invalid";
+        String url = INVALID_PAGE;
         
         String username = request.getParameter("txtUsername");
         String password = request.getParameter("txtPassword");
@@ -49,7 +52,7 @@ public class LoginServlet extends HttpServlet {
             RegistrationDTO dto = dao.getRegistrationByUsernameAndPassword(username, password);
             
             if (dto != null) {
-                url = "search";
+                url = SEARCH_PAGE;
                 
                 // Create new session and add RegistrationDTO attribute
                 HttpSession session = request.getSession();
@@ -60,13 +63,11 @@ public class LoginServlet extends HttpServlet {
                 cookie.setMaxAge(-1);   //means cookie existing until close browser
                 response.addCookie(cookie);
             }//end dto has existed
-        } catch (NamingException ex) {
+        } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
-        } catch (SQLException ex) {
-            LOGGER.error(ex);
+            response.sendError(500);
         } finally {
             response.sendRedirect(url);
-            //using sendRedirect to send cookie to browser
         }
     }
 

@@ -26,6 +26,8 @@ import org.apache.log4j.Logger;
 public class SearchAccountServlet extends HttpServlet {
     
     private final Logger LOGGER = Logger.getLogger(SearchAccountServlet.class);
+    
+    private final String SEARCH_PAGE = "search";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,7 +41,7 @@ public class SearchAccountServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String url = "search";
+        String url = SEARCH_PAGE;
         
         String searchValue = request.getParameter("txtSearch");
         
@@ -52,10 +54,9 @@ public class SearchAccountServlet extends HttpServlet {
                 //set result to request Scope
                 request.setAttribute("SEARCH_RESULT", result);
             }
-        } catch (NamingException ex) {
+        } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
-        } catch (SQLException ex) {
-            LOGGER.error(ex);
+            response.sendError(500);
         } finally {
             //Get roadmap form apllication scope
             Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");

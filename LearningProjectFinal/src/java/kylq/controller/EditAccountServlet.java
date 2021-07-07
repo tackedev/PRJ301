@@ -25,7 +25,9 @@ import org.apache.log4j.Logger;
  */
 public class EditAccountServlet extends HttpServlet {
     
-    private final Logger LOGGER = Logger.getLogger(EditAccountServlet.class); 
+    private final Logger LOGGER = Logger.getLogger(EditAccountServlet.class);
+    
+    private final String EDIT_ACCOUNT_PAGE = "editAccountPage";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,7 +44,7 @@ public class EditAccountServlet extends HttpServlet {
         String username = request.getParameter("txtUsername");
         String lastSearchValue = request.getParameter("txtSearch");
         
-        String url = "editAccountPage";
+        String url = EDIT_ACCOUNT_PAGE;
         
         try {
             // Call DAO to get full RegistrationDTO

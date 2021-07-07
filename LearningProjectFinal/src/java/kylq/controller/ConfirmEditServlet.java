@@ -21,6 +21,9 @@ import kylq.registration.RegistrationInsertError;
  * @author tackedev
  */
 public class ConfirmEditServlet extends HttpServlet {
+    
+    private final String EDIT_ACCOUNT_PAGE = "editAccountPage";
+    private final String CONFIRM_EDIT_PAGE = "confirmEditPage";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,7 +37,7 @@ public class ConfirmEditServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String url = "editAccountPage";
+        String url = EDIT_ACCOUNT_PAGE;
         
         String username = request.getParameter("txtUsername");
         String password = request.getParameter("txtPassword");
@@ -65,12 +68,12 @@ public class ConfirmEditServlet extends HttpServlet {
             //set errors to request scope
             request.setAttribute("INSERT_ERRORS", errors);
         } else {
-            url = "confirmEditPage";
+            url = CONFIRM_EDIT_PAGE;
         }
         
         //get roadmap form application scope
         Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
-        //forward to confirmEditPage
+
         RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
         rd.forward(request, response);
     }

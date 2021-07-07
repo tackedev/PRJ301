@@ -19,6 +19,8 @@ import kylq.registration.RegistrationDTO;
  * @author tackedev
  */
 public class LogoutServlet extends HttpServlet {
+    
+    private final String LOGIN_PAGE = "login";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,7 +34,7 @@ public class LogoutServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String url = "login";
+        String url = LOGIN_PAGE;
         
         try {
             //check existed session

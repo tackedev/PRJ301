@@ -26,6 +26,9 @@ import org.apache.log4j.Logger;
 public class RegisterServlet extends HttpServlet {
     
     private final Logger LOGGER = Logger.getLogger(RegisterServlet.class);
+    
+    private final String REGISTER_PAGE = "registerPage";
+    private final String LOGIN_PAGE = "login";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,7 +42,7 @@ public class RegisterServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String url = "registerPage";
+        String url = REGISTER_PAGE;
         
         String username = request.getParameter("txtUsername");
         String password = request.getParameter("txtPassword");
@@ -75,11 +78,12 @@ public class RegisterServlet extends HttpServlet {
                 RegistrationDTO dto = new RegistrationDTO(username, password, fullName, false);
                 
                 if (dao.createRegistration(dto)) {
-                    url = "login";
+                    url = LOGIN_PAGE;
                 }
             }
         } catch (NamingException ex) {
             LOGGER.error(ex);
+            response.sendError(500);
         } catch (SQLException ex) {
             LOGGER.error(ex);
             String exMsg = ex.getMessage();
@@ -88,16 +92,11 @@ public class RegisterServlet extends HttpServlet {
                 request.setAttribute("INSERT_ERRORS", errors);
             }
         } finally {
-            if (url.equals("login")) {
-                // register sucessfully, redirect to login 
-                response.sendRedirect(url);
-            } else {
-                //register fail, forward to register page to show errors
-                //get roadmap form Application Scope
-                Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
-                RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
-                rd.forward(request, response);
-            }
+            //get roadmap form Application Scope
+            Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
+            
+            RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
+            rd.forward(request, response);
         }
     }
 
