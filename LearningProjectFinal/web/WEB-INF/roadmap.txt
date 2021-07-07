@@ -17,3 +17,5 @@ confirmEditPage=confirmEdit.html
 updateEditAction=UpdateEditServlet
 shop=LoadShopServlet
 shopPage=shop.jsp
+addToCart=AddToCartServlet
+viewCart=viewCart.jsp

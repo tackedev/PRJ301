@@ -82,6 +82,10 @@
         <servlet-name>LoadShopServlet</servlet-name>
         <servlet-class>kylq.controller.LoadShopServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AddToCartServlet</servlet-name>
+        <servlet-class>kylq.controller.AddToCartServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RemindUserServlet</servlet-name>
         <url-pattern>/RemindUserServlet</url-pattern>
@@ -125,6 +129,10 @@
     <servlet-mapping>
         <servlet-name>LoadShopServlet</servlet-name>
         <url-pattern>/LoadShopServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddToCartServlet</servlet-name>
+        <url-pattern>/AddToCartServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

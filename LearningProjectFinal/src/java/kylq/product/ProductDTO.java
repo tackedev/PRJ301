@@ -7,6 +7,7 @@ package kylq.product;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  *
@@ -98,5 +99,30 @@ public class ProductDTO implements Serializable {
      */
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.sku);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ProductDTO other = (ProductDTO) obj;
+        if (!Objects.equals(this.sku, other.sku)) {
+            return false;
+        }
+        return true;
     }
 }

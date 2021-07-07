@@ -7,6 +7,7 @@ package kylq.product;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -68,5 +69,49 @@ public class ProductDAO {
             }
         }
         return result;
+    }
+    
+    public ProductDTO getProductBySku(String sku) throws NamingException, SQLException {        
+        Connection con = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        
+        try {
+            //1. Get connection
+            con = DBHelpers.getConnection();
+            if (con != null) {
+                //2. create sql string
+                String sql = "Select name, price, description, quantity "
+                           + "From Product "
+                           + "Where sku=?";
+                //3. create statement
+                stm = con.prepareStatement(sql);
+                stm.setString(1, sku);
+                //4. execute statement
+                rs = stm.executeQuery();
+                //5. process
+                if (rs.next()) {
+                    //get all fiels
+                    String name = rs.getString("name");
+                    BigDecimal price = rs.getBigDecimal("price");
+                    String description = rs.getString("description");
+                    int quantity = rs.getInt("quantity");
+                    // create DTO
+                    ProductDTO dto = new ProductDTO(sku, name, price, description, quantity);
+                    return dto;
+                }
+            }
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return null;
     }
 }

@@ -46,11 +46,18 @@
                         <td>
                             ${dto.quantity}
                         </td>
-                        <td>Action</td>
+                        <td>
+                            <form action="addToCart">
+                                <input type="hidden" name="txtSku" value="${dto.sku}" />
+                                <input type="submit" value="Add to cart" />
+                            </form>
+                        </td>
                     </tr>
                 </c:forEach>
             </tbody>
         </table>
-
+        <form action="viewCart">
+            <input type="submit" value="View cart" />
+        </form>
     </body>
 </html>
