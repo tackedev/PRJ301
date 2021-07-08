@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import kylq.cart.Cart;
-import org.apache.log4j.Logger;
 
 /**
  *
@@ -20,7 +19,6 @@ import org.apache.log4j.Logger;
  */
 public class RemoveItemsServlet extends HttpServlet {
 
-    private final Logger LOGGER = Logger.getLogger(RemoveItemsServlet.class);
     private final String VIEW_CART_PAGE = "viewCart";
 
     /**
@@ -57,7 +55,6 @@ public class RemoveItemsServlet extends HttpServlet {
         } finally {
             response.sendRedirect(VIEW_CART_PAGE);
         }
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
