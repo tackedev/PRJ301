@@ -16,6 +16,7 @@
         <h1>Online Shopping Page</h1>
 
         <c:set var="productList" value="${requestScope.PRODUCT_LIST}" />
+        <c:set var="currentCart" value="${sessionScope.CART}" />
 
         <table border="1">
             <thead>
@@ -44,7 +45,8 @@
                             ${dto.description}
                         </td>
                         <td>
-                            ${dto.quantity}
+                            ${dto.quantity - currentCart.getItemQuantityBySku(dto.sku)}
+                            <!--Display quantity after minus quantity in Cart-->
                         </td>
                         <td>
                             <form action="addToCart">

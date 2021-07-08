@@ -22,6 +22,14 @@ public class ProductDTO implements Serializable {
 
     public ProductDTO() {
     }
+    
+    public ProductDTO(String sku) {
+        this.sku = sku;
+        this.name = null;
+        this.price = null;
+        this.description = null;
+        this.quantity = 0;
+    }
 
     public ProductDTO(String sku, String name, BigDecimal price, String description, int quantity) {
         this.sku = sku;
@@ -120,9 +128,6 @@ public class ProductDTO implements Serializable {
             return false;
         }
         final ProductDTO other = (ProductDTO) obj;
-        if (!Objects.equals(this.sku, other.sku)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.sku, other.sku);
     }
 }

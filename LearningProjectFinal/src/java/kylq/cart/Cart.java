@@ -39,7 +39,7 @@ public class Cart implements Serializable {
         if (this.items == null) {
             this.items = new HashMap<>();
         }
-        //call DAO for get Product from sku
+        //call DAO for get real Product from sku
         ProductDAO dao = new ProductDAO();
         ProductDTO dto = dao.getProductBySku(sku);
         //check dto existed in this.items
@@ -49,5 +49,23 @@ public class Cart implements Serializable {
         }
         //update this.items
         this.items.put(dto, quantity);
-    } 
+    }
+    
+    public int getItemQuantityBySku(String sku) {
+        //check existed sku
+        if (sku == null || sku.trim().isEmpty()) {
+            return 0;
+        }
+        //check existed this.items
+        if (this.items == null) {
+            return 0;
+        }
+        // Create a temporary ProductDTO by sku
+        ProductDTO dto = new ProductDTO(sku);
+        //check dto (with sku) existed in this.items
+        if (this.items.containsKey(dto)) {
+            return this.items.get(dto);
+        }
+        return 0;
+    }
 }
