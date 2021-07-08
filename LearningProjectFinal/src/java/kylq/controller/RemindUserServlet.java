@@ -61,6 +61,8 @@ public class RemindUserServlet extends HttpServlet {
                         // Create new session and add RegistrationDTO attribute
                         HttpSession session = request.getSession();
                         session.setAttribute("USER", dto);
+                        
+                        break;
                     }//end dto has existed
                 }//end traverse cookies
             }//end cookies have existed
