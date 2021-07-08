@@ -68,4 +68,22 @@ public class Cart implements Serializable {
         }
         return 0;
     }
+    
+    public void removeItem(String sku) {
+        //check existed sku
+        if (sku == null || sku.trim().isEmpty()) {
+            return;
+        }
+        //check existed this.items
+        if (this.items == null) {
+            return;
+        }
+        // Create a temporary ProductDTO by sku
+        ProductDTO dto = new ProductDTO(sku);
+        this.items.remove(dto);
+        //sure that there's no items which nothing in it
+        if (this.items.isEmpty()) {
+            this.items = null;
+        }
+    } 
 }

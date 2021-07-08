@@ -14,50 +14,65 @@
     </head>
     <body>
         <h1>View cart page</h1>
-        
+
         <c:set var="cart" value="${sessionScope.CART}" />
         <c:if test="${not empty cart}">
             <c:set var="items" value="${cart.items}" />
             <c:if test="${not empty items}">
-                <table border="1">
-                    <thead>
-                        <tr>
-                            <th>No.</th>
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Action</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach var="item" items="${items}" varStatus="counter">
-                            <c:set var="dto" value="${item.key}" />
-                            <c:set var="quantity" value="${item.value}" />
+                <form action="removeItems">
+                    <table border="1">
+                        <thead>
                             <tr>
-                                <td>
-                                    ${counter.count}.
+                                <th>No.</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Action</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="item" items="${items}" varStatus="counter">
+                                <c:set var="dto" value="${item.key}" />
+                                <c:set var="quantity" value="${item.value}" />
+                                <tr>
+                                    <td>
+                                        ${counter.count}.
+                                    </td>
+                                    <td>
+                                        ${dto.name}
+                                    </td>
+                                    <td>
+                                        ${dto.price}
+                                    </td>
+                                    <td>
+                                        ${quantity}
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="chkItem" value="${dto.sku}" />
+                                    </td>
+                                    <td>
+                                        ${dto.price * quantity}
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                            <tr>
+                                <td colspan="4">
+                                    <a href="shop">Add more items to cart</a>
                                 </td>
                                 <td>
-                                    ${dto.name}
+                                    <input type="submit" value="Remove Items" />
                                 </td>
                                 <td>
-                                    ${dto.price}
-                                </td>
-                                <td>
-                                    ${quantity}
-                                </td>
-                                <td>Action</td>
-                                <td>
-                                    ${dto.price * quantity}
+                                    <a href="checkout"><button type="button">Checkout</button></a>
                                 </td>
                             </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </form>
             </c:if>
         </c:if>
-        
+
         <c:if test="${empty cart}">
             <h2>No cart is existed!!!</h2>
         </c:if>

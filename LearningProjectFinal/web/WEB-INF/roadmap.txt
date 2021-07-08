@@ -19,3 +19,4 @@ shop=LoadShopServlet
 shopPage=shop.jsp
 addToCart=AddToCartServlet
 viewCart=viewCart.jsp
+removeItems=RemoveItemsServlet
