@@ -6,10 +6,15 @@
 package kylq.cart;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.naming.NamingException;
+import kylq.orderDetail.OrderDetailDAO;
+import kylq.orderDetail.OrderDetailDTO;
 import kylq.product.ProductDAO;
 import kylq.product.ProductDTO;
 
@@ -85,5 +90,28 @@ public class Cart implements Serializable {
         if (this.items.isEmpty()) {
             this.items = null;
         }
-    } 
+    }
+    
+    public boolean checkout() throws NamingException, SQLException {
+        //check existed this.items
+        if (this.items == null) {
+            return false;
+        }
+        //create OrderDetailDTO List
+        List<OrderDetailDTO> orderDetailList = new ArrayList<>();
+        for (ProductDTO item : items.keySet()) {
+            //create OrderDetailDTO
+            String sku = item.getSku();
+            BigDecimal price = item.getPrice();
+            int quantity = items.get(item);
+            BigDecimal total = price.multiply(BigDecimal.valueOf(quantity));
+            
+            OrderDetailDTO dto = new OrderDetailDTO(sku, price, quantity, total);
+            
+            orderDetailList.add(dto);
+        }
+        //call DAO for checkout
+        OrderDetailDAO dao = new OrderDetailDAO();
+        return dao.insertOrderDetails(orderDetailList);
+    }
 }
