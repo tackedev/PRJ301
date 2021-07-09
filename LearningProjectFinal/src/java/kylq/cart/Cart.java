@@ -92,23 +92,28 @@ public class Cart implements Serializable {
         }
     }
     
-    public boolean checkout() throws NamingException, SQLException {
+    public boolean checkout() throws NamingException, SQLException, Exception {
         //check existed this.items
         if (this.items == null) {
             return false;
         }
         //create OrderDetailDTO List
         List<OrderDetailDTO> orderDetailList = new ArrayList<>();
-        for (ProductDTO item : items.keySet()) {
+        for (ProductDTO dto : items.keySet()) {
+            //check enough quantity
+            if (dto.getQuantity() < items.get(dto)) {
+                return false;
+                // Toi hoi anh Tien cach xu li
+            }
             //create OrderDetailDTO
-            String sku = item.getSku();
-            BigDecimal price = item.getPrice();
-            int quantity = items.get(item);
+            String sku = dto.getSku();
+            BigDecimal price = dto.getPrice();
+            int quantity = items.get(dto);
             BigDecimal total = price.multiply(BigDecimal.valueOf(quantity));
             
-            OrderDetailDTO dto = new OrderDetailDTO(sku, price, quantity, total);
+            OrderDetailDTO orderDetailDTO = new OrderDetailDTO(sku, price, quantity, total);
             
-            orderDetailList.add(dto);
+            orderDetailList.add(orderDetailDTO);
         }
         //call DAO for checkout
         OrderDetailDAO dao = new OrderDetailDAO();
