@@ -7,12 +7,17 @@ package kylq.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 import javax.naming.NamingException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import kylq.registration.DeleteRegistrationErrors;
 import kylq.registration.RegistrationDAO;
+import kylq.registration.RegistrationDTO;
 import org.apache.log4j.Logger;
 
 /**
@@ -41,6 +46,21 @@ public class DeleteAccountServlet extends HttpServlet {
         String username = request.getParameter("txtUsername");
         
         try {
+            //check deleteUser is not the Current User
+            //Get USER in session scope, don't need to check existed session or existed USER in session
+            //because have checked in Authentication Filter 
+            HttpSession session = request.getSession();
+            RegistrationDTO dto = (RegistrationDTO) session.getAttribute("USER");
+            
+            if (dto.getUsername().equals(username)) {
+                DeleteRegistrationErrors deleteError = new DeleteRegistrationErrors();
+                deleteError.setDeleteUsername(username);
+                deleteError.setDeleteYourAccount("Cannot delete your account!");
+                request.setAttribute("DELETE_ACCOUNT_ERRORS", deleteError);
+                return; //run finally block
+            }
+            
+                
             // Call DAO then call deleteRegistration
             RegistrationDAO dao = new RegistrationDAO();
             if (dao.deleteRegistration(username)) {
@@ -50,9 +70,13 @@ public class DeleteAccountServlet extends HttpServlet {
             LOGGER.error(ex);
             response.sendError(500);
         } finally {
-            String url = SEARCH_ACCOUNT_CONTROLLER
+            //get roadmap from application scope
+            Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
+            String url = roadmap.get(SEARCH_ACCOUNT_CONTROLLER)
                     + "?txtSearch=" + lastSearchValue;
-            response.sendRedirect(url);
+            
+            RequestDispatcher rd = request.getRequestDispatcher(url);
+            rd.forward(request, response);
         }
     }
 

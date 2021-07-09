@@ -31,6 +31,7 @@
         <c:if test="${not empty searchValue}">
             <c:set var="result" value="${requestScope.SEARCH_RESULT}" />
             <c:if test="${not empty result}" >
+                <c:set var="deleteErrors" value="${requestScope.DELETE_ACCOUNT_ERRORS}" />
                 <table border="1">
                     <thead>
                         <tr>
@@ -80,6 +81,9 @@
                                         <c:param name="txtSearch" value="${searchValue}" />
                                     </c:url>
                                     <a href="${deleteLink}">Delete</a>
+                                    <c:if test="${deleteErrors.deleteUsername eq dto.username}" >
+                                        <br/><font color="red">${deleteErrors.deleteYourAccount}</font>
+                                    </c:if>
                                 </td>
                                 <td>
                                     <input type="hidden" name="txtSearch" value="${searchValue}" />
