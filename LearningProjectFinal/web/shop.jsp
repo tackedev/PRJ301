@@ -45,13 +45,18 @@
                             ${dto.description}
                         </td>
                         <td>
-                            ${dto.quantity - currentCart.getItemQuantityBySku(dto.sku)}
                             <!--Display quantity after minus quantity in Cart-->
+                            <c:set var="remainQuantity" value="${dto.quantity - currentCart.getItemQuantityBySku(dto.sku)}" />
+                            ${remainQuantity}
                         </td>
                         <td>
-                            <form action="addToCart">
+                            <form action="addToCart" method="POST">
                                 <input type="hidden" name="txtSku" value="${dto.sku}" />
-                                <input type="submit" value="Add to cart" />
+                                <input type="submit" value="Add to cart"
+                                       <c:if test="${remainQuantity == 0}" >
+                                           disabled
+                                       </c:if>
+                                       />
                             </form>
                         </td>
                     </tr>
