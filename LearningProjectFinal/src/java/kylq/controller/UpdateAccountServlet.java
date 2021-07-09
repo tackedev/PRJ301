@@ -43,9 +43,7 @@ public class UpdateAccountServlet extends HttpServlet {
         String username = request.getParameter("txtUsername");
         String password = request.getParameter("txtPassword");
         Boolean role = request.getParameter("chkRole") != null;
-        
-        String lastSearchValue = request.getParameter("txtSearch");
-        
+                
         try {
             //validation input
             //password (6 - 30 chars)
@@ -66,9 +64,9 @@ public class UpdateAccountServlet extends HttpServlet {
         } finally {
             //get roadmap from application scope
             Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
+            String url = roadmap.get(SEARCH_ACCOUNT_CONTROLLER);
+            //don't need to add txtSearch=lastSearchValue because we use forward, request param txtSearch is still existed
             
-            String url = roadmap.get(SEARCH_ACCOUNT_CONTROLLER)
-                   + "?txtSearch=" + lastSearchValue;
             RequestDispatcher rd = request.getRequestDispatcher(url);
             rd.forward(request, response);
         }

@@ -71,7 +71,7 @@ public class DeleteAccountServlet extends HttpServlet {
             //get roadmap from application scope
             Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
             String url = roadmap.get(SEARCH_ACCOUNT_CONTROLLER);
-            //don't need to add txtSearch=lastSearchValue because we use forward, request param is still existed
+            //don't need to add txtSearch=lastSearchValue because we use forward, request param txtSearch is still existed
             
             RequestDispatcher rd = request.getRequestDispatcher(url);
             rd.forward(request, response);
