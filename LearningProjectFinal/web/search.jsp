@@ -31,7 +31,6 @@
         <c:if test="${not empty searchValue}">
             <c:set var="result" value="${requestScope.SEARCH_RESULT}" />
             <c:if test="${not empty result}" >
-                <c:set var="deleteErrors" value="${requestScope.DELETE_ACCOUNT_ERRORS}" />
                 <table border="1">
                     <thead>
                         <tr>
@@ -58,8 +57,9 @@
                                 </td>
                                 <td>
                                     <input type="text" name="txtPassword" value="${dto.password}" />
-                                    <c:if test="${not empty requestScope.INSERT_ERRORS}" >
-                                        <c:if test="${dto.username eq param.txtUsername}">
+                                    <!-- Show errors -->
+                                    <c:if test="${dto.username eq param.txtUsername}">
+                                        <c:if test="${not empty requestScope.INSERT_ERRORS}" >
                                             <br/>
                                             <font color="red">${requestScope.INSERT_ERRORS.passwordLengthErr}</font>
                                         </c:if>
@@ -81,8 +81,11 @@
                                         <c:param name="txtSearch" value="${searchValue}" />
                                     </c:url>
                                     <a href="${deleteLink}">Delete</a>
-                                    <c:if test="${deleteErrors.deleteUsername eq dto.username}" >
-                                        <br/><font color="red">${deleteErrors.deleteYourAccount}</font>
+                                    <!-- Show errors -->
+                                    <c:if test="${dto.username eq param.txtUsername}">
+                                        <c:if test="${not empty requestScope.DELETE_ACCOUNT_ERRORS}" >
+                                            <br/><font color="red">${requestScope.DELETE_ACCOUNT_ERRORS.deleteYourAccount}</font>
+                                        </c:if>
                                     </c:if>
                                 </td>
                                 <td>

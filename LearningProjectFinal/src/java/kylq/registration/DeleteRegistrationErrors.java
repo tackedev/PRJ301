@@ -12,7 +12,6 @@ import java.io.Serializable;
  * @author tackedev
  */
 public class DeleteRegistrationErrors implements Serializable {
-    private String deleteUsername;
     private String deleteYourAccount;
 
     public DeleteRegistrationErrors() {
@@ -30,19 +29,5 @@ public class DeleteRegistrationErrors implements Serializable {
      */
     public void setDeleteYourAccount(String deleteYourAccount) {
         this.deleteYourAccount = deleteYourAccount;
-    }
-
-    /**
-     * @return the deleteUsername
-     */
-    public String getDeleteUsername() {
-        return deleteUsername;
-    }
-
-    /**
-     * @param deleteUsername the deleteUsername to set
-     */
-    public void setDeleteUsername(String deleteUsername) {
-        this.deleteUsername = deleteUsername;
     }
 }
