@@ -52,7 +52,7 @@
                             ${remainQuantity}
                         </td>
                         <td>
-                            <form action="addToCart" method="POST">
+                            <form action="addToCart" >
                                 <input type="hidden" name="txtSku" value="${dto.sku}" />
                                 <input type="submit" value="Add to cart"
                                        <c:if test="${remainQuantity == 0}" >

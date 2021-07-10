@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import kylq.cart.Cart;
+import kylq.cart.NotEnoughQuantityException;
 import org.apache.log4j.Logger;
 
 /**
@@ -27,15 +28,15 @@ public class AddToCartServlet extends HttpServlet {
     private final String LOAD_SHOP_CONTROLLER = "shop";
 
     /**
-     * Handles the HTTP <code>POST</code> method.
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
      *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
         try {
@@ -48,15 +49,49 @@ public class AddToCartServlet extends HttpServlet {
             }
             //3. Takes item 
             String sku = request.getParameter("txtSku");
+            
             //4. Drops item to Cart
             cart.addItemToCart(sku);
             session.setAttribute("CART", cart);
         } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
             response.sendError(500);
+        } catch (NotEnoughQuantityException ex) {
+            // because if not enough quantity, button AddToCart will disable
+            // this exception only catch when user request by custom url
+            // So, only need redirect agian to Shop page without error notification
         } finally {
             response.sendRedirect(LOAD_SHOP_CONTROLLER);
         }
+    }
+    
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
     }
 
     /**

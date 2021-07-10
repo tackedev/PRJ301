@@ -35,7 +35,7 @@ public class Cart implements Serializable {
         return items;
     }
     
-    public void addItemToCart(String sku) throws NamingException, SQLException {
+    public void addItemToCart(String sku) throws NamingException, SQLException, NotEnoughQuantityException {
         //check existed sku
         if (sku == null || sku.trim().isEmpty()) {
             return;
@@ -51,6 +51,10 @@ public class Cart implements Serializable {
         int quantity = 1;
         if (this.items.containsKey(dto)) {
             quantity = this.items.get(dto) + 1;
+        }
+        //check enough quantity
+        if (dto.getQuantity() < quantity) {
+            throw  new NotEnoughQuantityException();
         }
         //update this.items
         this.items.put(dto, quantity);
