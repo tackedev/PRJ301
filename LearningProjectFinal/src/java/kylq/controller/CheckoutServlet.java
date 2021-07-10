@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import kylq.cart.Cart;
+import kylq.cart.NotEnoughQuantityException;
 import org.apache.log4j.Logger;
 
 /**
@@ -21,11 +22,12 @@ import org.apache.log4j.Logger;
  * @author tackedev
  */
 public class CheckoutServlet extends HttpServlet {
-    
+
     private final Logger LOGGER = Logger.getLogger(CheckoutServlet.class);
-    
+
     private final String VIEW_CART_PAGE = "viewCart";
-    private final String LOAD_SHOP_CONTROLLER  = "shop"; 
+    private final String LOAD_SHOP_CONTROLLER = "shop";
+    private final String NOT_ENOUGH_QUANTITY_ERROR_PAGE = "notEnoughQuantityError";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,12 +40,13 @@ public class CheckoutServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String url = VIEW_CART_PAGE;
-        
+
+        //goes to cart's place
+        HttpSession session = request.getSession(false);
+
         try {
-            //goes to cart's place
-            HttpSession session = request.getSession(false);
             if (session == null) {
                 return;
             }
@@ -61,11 +64,20 @@ public class CheckoutServlet extends HttpServlet {
             }
         } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
-            response.sendError(500);
+            if (ex.getMessage().contains("The transaction ended in the trigger. The batch has been aborted")) {
+                // It is also Not enough quantity error
+                url = NOT_ENOUGH_QUANTITY_ERROR_PAGE;
+                session.removeAttribute("CART");
+            } else {
+                response.sendError(500);
+            }
+        } catch (NotEnoughQuantityException ex) {
+            url = NOT_ENOUGH_QUANTITY_ERROR_PAGE;
+            //because not enough quantity, so the Cart is invalid, we remove it and redirect to Shop page to update new product status
+            session.removeAttribute("CART");
         } finally {
             response.sendRedirect(url);
         }
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

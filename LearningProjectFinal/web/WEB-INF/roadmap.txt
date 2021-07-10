@@ -21,3 +21,4 @@ addToCart=AddToCartServlet
 viewCart=viewCart.jsp
 removeItems=RemoveItemsServlet
 checkout=CheckoutServlet
+notEnoughQuantityError=notEnoughQuantityError.html

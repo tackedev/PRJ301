@@ -52,6 +52,7 @@ public class OrderDetailDAO implements Serializable {
         } catch (SQLException ex) {
             if (con != null) {
                 con.rollback();
+                throw ex;
             }
         } finally {
             if (stm != null) {
