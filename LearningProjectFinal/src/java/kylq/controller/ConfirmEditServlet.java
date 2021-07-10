@@ -24,19 +24,9 @@ public class ConfirmEditServlet extends HttpServlet {
     
     private final String EDIT_ACCOUNT_PAGE = "editAccountPage";
     private final String CONFIRM_EDIT_PAGE = "confirmEditPage";
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
+    private final String SEARCH_CONTROLLER = "searchAccountAction";
+    
+    private void processUpdate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String url = EDIT_ACCOUNT_PAGE;
         
         String username = request.getParameter("txtUsername");
@@ -77,6 +67,41 @@ public class ConfirmEditServlet extends HttpServlet {
 
         RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
         rd.forward(request, response);
+    }
+    
+    private void processCancel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        //get lastSearchValue from session scope
+        HttpSession session = request.getSession();
+        String lastSearchValue = (String) session.getAttribute("LAST_SEARCH_VALUE");
+        
+        //Remove EDIT_USER and LAST_SEARCH_VALUE in session
+        session.removeAttribute("EDIT_USER");
+        session.removeAttribute("LAST_SEARCH_VALUE");
+        
+        String url = SEARCH_CONTROLLER 
+                   + "?txtSearch=" +  lastSearchValue;
+        response.sendRedirect(url);
+    }
+
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        String button = request.getParameter("btnAction");
+        
+        if (button.equals("Update")) {
+            processUpdate(request, response);
+        } else {
+            processCancel(request, response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

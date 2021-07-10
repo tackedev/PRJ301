@@ -13,10 +13,11 @@
         <title>Search</title>
     </head>
     <body>
-        <a href="logoutAction">Logout</a><br/>
-
+        <a href="logoutAction" style="margin-right: 3px">Logout</a>
+        <a href="shop">Go to Shop page</a><br/>
+        
         <c:if test="${not empty sessionScope.USER.lastName}" >
-            <font color="red">Welcome, ${sessionScope.USER.lastName}</font>
+            <h2 style="color:red">Welcome, ${sessionScope.USER.lastName}</h2>
         </c:if>
 
         <h1>Search page</h1>

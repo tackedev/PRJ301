@@ -13,6 +13,7 @@
         <title>View cart</title>
     </head>
     <body>
+        <a href="shop">Back to Shop page</a>
         <h1>View cart page</h1>
 
         <c:set var="cart" value="${sessionScope.CART}" />

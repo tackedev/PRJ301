@@ -13,6 +13,8 @@
         <title>Online Shopping</title>
     </head>
     <body>
+        <!-- If don't have session or Authenticated User, AuthenticationFilter will redirect to Login page  -->
+        <a href="search">Back</a>
         <h1>Online Shopping Page</h1>
 
         <c:set var="productList" value="${requestScope.PRODUCT_LIST}" />

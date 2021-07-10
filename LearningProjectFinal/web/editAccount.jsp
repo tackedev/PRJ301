@@ -38,7 +38,8 @@
                             checked="checked"
                         </c:if>
                         /><br/>
-            <input type="submit" value="Update" />
+            <input type="submit" value="Update" name="btnAction" />
+            <input type="submit" value="Cancel" name="btnAction" />
         </form>
     </body>
 </html>

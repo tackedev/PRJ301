@@ -13,6 +13,7 @@
         <title>Register</title>
     </head>
     <body>
+        <a href="login">Back to Login page</a>
         <h1>Register page</h1>
 
         <c:set var="errors" value="${requestScope.INSERT_ERRORS}" />
