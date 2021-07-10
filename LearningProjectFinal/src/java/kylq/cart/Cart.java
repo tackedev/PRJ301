@@ -17,12 +17,14 @@ import kylq.orderDetail.OrderDetailDAO;
 import kylq.orderDetail.OrderDetailDTO;
 import kylq.product.ProductDAO;
 import kylq.product.ProductDTO;
+import orders.OrdersDAO;
 
 /**
  *
  * @author tackedev
  */
-public class Cart implements Serializable { 
+public class Cart implements Serializable {
+
     private Map<ProductDTO, Integer> items;
 
     public Cart() {
@@ -34,7 +36,7 @@ public class Cart implements Serializable {
     public Map<ProductDTO, Integer> getItems() {
         return items;
     }
-    
+
     public void addItemToCart(String sku) throws NamingException, SQLException, NotEnoughQuantityException {
         //check existed sku
         if (sku == null || sku.trim().isEmpty()) {
@@ -54,12 +56,12 @@ public class Cart implements Serializable {
         }
         //check enough quantity
         if (dto.getQuantity() < quantity) {
-            throw  new NotEnoughQuantityException();
+            throw new NotEnoughQuantityException();
         }
         //update this.items
         this.items.put(dto, quantity);
     }
-    
+
     public int getItemQuantityBySku(String sku) {
         //check existed sku
         if (sku == null || sku.trim().isEmpty()) {
@@ -77,7 +79,7 @@ public class Cart implements Serializable {
         }
         return 0;
     }
-    
+
     public void removeItem(String sku) {
         //check existed sku
         if (sku == null || sku.trim().isEmpty()) {
@@ -96,34 +98,62 @@ public class Cart implements Serializable {
         }
     }
     
-    public boolean checkout() throws NamingException, SQLException, NotEnoughQuantityException {
-        //check existed this.items
-        if (this.items == null) {
-            return false;
-        }
-        
+    private boolean checkEnoughAllProductsQuantity() throws NamingException, SQLException, NotEnoughQuantityException {
+        //call DAO for get product to check
         ProductDAO productDAO = new ProductDAO();
-        
-        //create OrderDetailDTO List
-        List<OrderDetailDTO> orderDetailList = new ArrayList<>();
         for (ProductDTO item : items.keySet()) {
-            //check enough quantity
             ProductDTO productDTO = productDAO.getProductBySku(item.getSku());
+            
             if (productDTO.getQuantity() < items.get(item)) {
                 throw new NotEnoughQuantityException();
             }
+        }
+        return true;
+    }
+
+    private int createNewOrder(String customer) throws NamingException, SQLException {
+        OrdersDAO dao = new OrdersDAO();
+        int newOrderId = dao.insertNewOrder(customer);
+        return newOrderId;
+    }
+
+    private boolean insertOrderDetailList(int orderId) throws NamingException, SQLException {
+        //create OrderDetailDTO List
+        List<OrderDetailDTO> orderDetailList = new ArrayList<>();
+        
+        for (ProductDTO item : items.keySet()) {
             //create OrderDetailDTO
             String sku = item.getSku();
             BigDecimal price = item.getPrice();
             int quantity = items.get(item);
             BigDecimal total = price.multiply(BigDecimal.valueOf(quantity));
-            
+
             OrderDetailDTO orderDetailDTO = new OrderDetailDTO(sku, price, quantity, total);
             
+            //add dto to list
             orderDetailList.add(orderDetailDTO);
         }
         //call DAO for checkout
         OrderDetailDAO dao = new OrderDetailDAO();
-        return dao.insertOrderDetails(orderDetailList);
+        return dao.insertOrderDetails(orderId, orderDetailList);
+    }
+
+    public boolean checkout(String customer) throws NamingException, SQLException, NotEnoughQuantityException {
+        //check existed this.items
+        if (this.items == null) {
+            return false;
+        }
+        
+        //check enough all products' quantity
+        checkEnoughAllProductsQuantity();
+        //if not enough, it will throw NotEnoughQuantityException
+        
+        //create new orders
+        int newOrderId = createNewOrder(customer);
+        //if there are some errors, it will throw exception
+
+        //insert orders detail
+        return insertOrderDetailList(newOrderId);
+        //if there are some errors, it will throw exception
     }
 }

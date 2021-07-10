@@ -20,5 +20,6 @@ shopPage=shop.jsp
 addToCart=ShopAddToCartServlet
 viewCart=viewCart.jsp
 removeItems=CartRemoveItemsServlet
-checkout=CartCheckoutServlet
+checkout=confirmCheckout.jsp
+checkoutAction=CartCheckoutServlet
 notEnoughQuantityError=notEnoughQuantityError.html

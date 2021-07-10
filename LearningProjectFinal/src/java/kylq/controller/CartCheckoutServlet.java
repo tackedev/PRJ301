@@ -7,13 +7,16 @@ package kylq.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 import javax.naming.NamingException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import kylq.cart.Cart;
+import kylq.cart.CartErrors;
 import kylq.cart.NotEnoughQuantityException;
 import org.apache.log4j.Logger;
 
@@ -24,7 +27,8 @@ import org.apache.log4j.Logger;
 public class CartCheckoutServlet extends HttpServlet {
 
     private final Logger LOGGER = Logger.getLogger(CartCheckoutServlet.class);
-
+    
+    private final String CONFIRM_CHECKOUT_PAGE = "checkout";
     private final String VIEW_CART_PAGE = "viewCart";
     private final String LOAD_SHOP_CONTROLLER = "shop";
     private final String NOT_ENOUGH_QUANTITY_ERROR_PAGE = "notEnoughQuantityError";
@@ -55,8 +59,18 @@ public class CartCheckoutServlet extends HttpServlet {
             if (cart == null) {
                 return;
             }
+            //check existed txtCustomer
+            String customer = request.getParameter("txtCustomer").trim();
+            if (customer == null || customer.trim().isEmpty()) {
+                url = CONFIRM_CHECKOUT_PAGE;
+                CartErrors errors = new CartErrors();
+                errors.setEmptyCustomer("Empty customer");
+                request.setAttribute("EMPTY_CUSTOMER_ERRORS", errors);
+                return;
+            }
+            
             //call checkout
-            if (cart.checkout()) {
+            if (cart.checkout(customer)) {
                 // checkout successfully
                 url = LOAD_SHOP_CONTROLLER;
                 // remove CART
@@ -76,7 +90,14 @@ public class CartCheckoutServlet extends HttpServlet {
             //because not enough quantity, so the Cart is invalid, we remove it and redirect to Shop page to update new product status
             session.removeAttribute("CART");
         } finally {
-            response.sendRedirect(url);
+            if (url.equals(CONFIRM_CHECKOUT_PAGE)) {
+                //get roadmap from application scope
+                Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
+                RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
+                rd.forward(request, response);
+            } else {
+                response.sendRedirect(url);
+            }
         }
     }
 

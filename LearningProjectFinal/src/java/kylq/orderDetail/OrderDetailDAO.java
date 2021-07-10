@@ -19,7 +19,7 @@ import kylq.utils.DBHelpers;
  */
 public class OrderDetailDAO implements Serializable {
     
-    public boolean insertOrderDetails(List<OrderDetailDTO> orderDetailList) throws NamingException, SQLException {
+    public boolean insertOrderDetails(int orderId, List<OrderDetailDTO> orderDetailList) throws NamingException, SQLException {
         Connection con = null;
         PreparedStatement stm = null;
         int row = 0;
@@ -31,15 +31,16 @@ public class OrderDetailDAO implements Serializable {
                 //turn off autoCommit
                 con.setAutoCommit(false);
                 //2. create sql string
-                String sql = "Insert Into OrderDetail (sku, price, quantity, total) "
-                           + "Values (?, ?, ?, ?)";
+                String sql = "Insert Into OrderDetail (ordersId, sku, price, quantity, total) "
+                           + "Values (?, ?, ?, ?, ?)";
                 //3. Create statement
                 stm = con.prepareStatement(sql);
+                stm.setInt(1, orderId);
                 for (OrderDetailDTO dto : orderDetailList) {
-                    stm.setString(1, dto.getSku());
-                    stm.setBigDecimal(2, dto.getPrice());
-                    stm.setInt(3, dto.getQuantity());
-                    stm.setBigDecimal(4, dto.getTotal());
+                    stm.setString(2, dto.getSku());
+                    stm.setBigDecimal(3, dto.getPrice());
+                    stm.setInt(4, dto.getQuantity());
+                    stm.setBigDecimal(5, dto.getTotal());
                     //4. execute statement
                     row += stm.executeUpdate();
                 }
