@@ -10,7 +10,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -26,21 +28,6 @@ import org.apache.log4j.PropertyConfigurator;
 public class ContextListener implements ServletContextListener {
     
     private final Logger LOGGER = Logger.getLogger(ContextListener.class);
-    
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        //get current context
-        ServletContext context = sce.getServletContext();
-        
-        //config log4j
-        configLog4j(context);
-        //load roadmap 
-        loadRoadMapFromFile(context);
-    }
-
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-    }
     
     private void configLog4j(ServletContext context) {
         //get real path to config file
@@ -92,5 +79,59 @@ public class ContextListener implements ServletContextListener {
         
         //set roadmap to Application Scope
         context.setAttribute("ROAD_MAP", roadmap);
+    }
+    
+    private void loadAuthenticationList(ServletContext context) {
+        //get real path to authenticationList-location
+        String path = context.getInitParameter("authenticationList-location");
+        String realPath = context.getRealPath("/" + path);
+        
+        //Initialize list
+        List<String> authenticationList = new ArrayList<>();
+        
+        //Read file 
+        FileReader fr = null;
+        BufferedReader br = null;
+        try {
+            fr = new FileReader(new File(realPath));
+            br = new BufferedReader(fr);
+            
+            String line;
+            while ((line = br.readLine()) != null) {
+                authenticationList.add(line);
+            }
+        } catch (FileNotFoundException ex) {
+            LOGGER.error(ex);
+        } catch (IOException ex) {
+            LOGGER.error(ex);
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+                if (fr != null) {
+                    fr.close();
+                }
+            } catch (IOException ex) {
+                LOGGER.error(ex);
+            }
+        }
+        
+        //set this list to application scope
+        context.setAttribute("AUTHENTICATION_LIST", authenticationList);
+    }
+    
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        //get current context
+        ServletContext context = sce.getServletContext();
+        
+        configLog4j(context);
+        loadRoadMapFromFile(context);
+        loadAuthenticationList(context);
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
     }
 }

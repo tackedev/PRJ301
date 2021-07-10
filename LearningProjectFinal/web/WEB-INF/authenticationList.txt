@@ -1,0 +1,10 @@
+search
+searchAccountAction
+logoutAction
+deleteAccountAction
+updateAccountAction
+editAccount
+editAccountPage
+confirmEdit
+confirmEditPage
+updateEditAction

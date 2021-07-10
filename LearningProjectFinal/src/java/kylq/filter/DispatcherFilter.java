@@ -57,8 +57,7 @@ public class DispatcherFilter implements Filter {
         Map<String, String> roadmap = (Map<String, String>) context.getAttribute("ROAD_MAP");
         
         //get resource
-        //getServletPath() return "/servletName"
-        String action = httpRequest.getServletPath().substring(1);
+        String action = httpRequest.getServletPath().substring(1); //getServletPath() return /servletName, then we remove '/'
         String resource = roadmap.get(action);
         
         if (resource != null) {

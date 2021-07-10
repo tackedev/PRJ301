@@ -6,9 +6,12 @@
 package kylq.filter;
 
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -47,13 +50,49 @@ public class AuthenticationFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         
-        //check existed session and existed authenticated user
+        //get authenticationList from application scope
+        ServletContext context = httpRequest.getServletContext();
+        List<String> authenticationList = (List<String>) context.getAttribute("AUTHENTICATION_LIST");
+        
+        //check existed authenticated user
         HttpSession session = httpRequest.getSession(false);
-        if (session == null || session.getAttribute("USER") == null) {
-            httpResponse.sendRedirect("login");
+        boolean existedAuthenticatedUser = session != null && session.getAttribute("USER") != null;
+        
+        String action = httpRequest.getServletPath().substring(1); //getServletPath() return /servletName, then we remove '/'
+        if (action.equals("login")) {
+            //check if existed authenticated user, not allow to access login again
+            if (existedAuthenticatedUser) {
+                httpResponse.sendRedirect("search");
+            } else {
+                chain.doFilter(request, response);
+            }
+        } else if (authenticationList.contains(action)) {
+            //check if not existed authenticated user, not allow to access
+            if (!existedAuthenticatedUser) {
+                httpResponse.sendRedirect("login");
+            } else {
+                chain.doFilter(request, response);
+            }
         } else {
             chain.doFilter(request, response);
         }
+        
+//        //check existed session and existed authenticated user
+//        
+//        if (session == null || session.getAttribute("USER") == null) {
+//            //forward to login page
+//            RequestDispatcher rd = httpRequest.getRequestDispatcher(roadmap.get("login"));
+//            rd.forward(request, response);
+//        } else {
+//            //when existed authenticated user, not permiss accessing login page
+//            String resource = httpRequest.getServerName().substring(1);
+//                        
+//            if (resource.equals("login")) {
+//                httpResponse.sendRedirect("search");
+//            } else {
+//                chain.doFilter(request, response);
+//            }            
+//        }
     }
 
     /**
