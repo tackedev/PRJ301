@@ -54,6 +54,7 @@ public class RegisterServlet extends HttpServlet {
         
         try {
             //1. Check all user errors
+            username = username.trim();
             if (username.length() < 6 || username.length() > 20) {
                 foundError = true;
                 errors.setUsernameLengErr("Username is required from 6 to 20 characters");
@@ -65,6 +66,7 @@ public class RegisterServlet extends HttpServlet {
                 foundError = true;
                 errors.setConfirmNoMatch("Confirm must match password");
             }
+            fullName = fullName.trim();
             if (fullName.length() < 2 || fullName.length() > 50) {
                 foundError = true;
                 errors.setFullNameLengthErr("Fullname is required from 2 to 50 characters");
@@ -72,6 +74,8 @@ public class RegisterServlet extends HttpServlet {
             
             if (foundError) {
                 request.setAttribute("INSERT_ERRORS", errors);
+                request.setAttribute("USERNAME", username);
+                request.setAttribute("FULLNAME", fullName);
             } else {
                 //2. Insert to DB - call DAO
                 RegistrationDAO dao = new RegistrationDAO();

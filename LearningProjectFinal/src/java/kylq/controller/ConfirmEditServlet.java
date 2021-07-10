@@ -45,6 +45,7 @@ public class ConfirmEditServlet extends HttpServlet {
         Boolean role = request.getParameter("chkRole") != null;
         
         //get edited dto
+        lastName = lastName.trim();
         RegistrationDTO dto = new RegistrationDTO(username, password, lastName, role);
         //Replace old EDIT_USER in session scope
         HttpSession session = request.getSession();

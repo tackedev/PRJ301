@@ -18,7 +18,7 @@
         <c:set var="errors" value="${requestScope.INSERT_ERRORS}" />
 
         <form action="registerAction" method="POST">
-            Username* <input type="text" name="txtUsername" value="${param.txtUsername}" /> (6 - 20 chars)<br/>
+            Username* <input type="text" name="txtUsername" value="${requestScope.USERNAME}" /> (6 - 20 chars)<br/>
 
             <c:if test="${not empty errors.usernameLengErr}" >
                 <font color="red">
@@ -48,7 +48,7 @@
                 </font><br/>
             </c:if>
 
-            Full name <input type="text" name="txtFullName" value="${param.txtFullName}" /> (2 - 50 chars)<br/>
+            Full name <input type="text" name="txtFullName" value="${requestScope.FULLNAME}" /> (2 - 50 chars)<br/>
 
             <c:if test="${not empty errors.fullNameLengthErr}" >
                 <font color="red">
