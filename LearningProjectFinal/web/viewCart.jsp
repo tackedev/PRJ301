@@ -74,7 +74,7 @@
             </c:if>
         </c:if>
 
-        <c:if test="${empty cart}">
+        <c:if test="${empty items}">
             <h2>No cart is existed!!!</h2>
         </c:if>
     </body>
