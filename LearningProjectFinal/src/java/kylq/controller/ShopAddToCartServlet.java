@@ -9,25 +9,23 @@ import java.io.IOException;
 import java.sql.SQLException;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import kylq.registration.RegistrationDAO;
-import kylq.registration.RegistrationDTO;
+import kylq.cart.Cart;
+import kylq.cart.NotEnoughQuantityException;
 import org.apache.log4j.Logger;
 
 /**
  *
  * @author tackedev
  */
-public class RemindUserServlet extends HttpServlet {
+public class ShopAddToCartServlet extends HttpServlet {
     
-    private final Logger LOGGER = Logger.getLogger(RemindUserServlet.class);
+    private final Logger LOGGER = Logger.getLogger(ShopAddToCartServlet.class);
     
-    private final String LOGIN_PAGE = "login";
-    private final String SEARCH_PAGE = "search";
+    private final String LOAD_SHOP_CONTROLLER = "shop";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,40 +39,32 @@ public class RemindUserServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String url = LOGIN_PAGE;
-        
-        Cookie[] cookies = request.getCookies();
-        
         try {
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    String username = cookie.getName();
-                    String password = cookie.getValue();
-
-                    //call DAO for getRegistration
-                    RegistrationDAO dao = new RegistrationDAO();
-                    RegistrationDTO dto = dao.getRegistrationByUsernameAndPassword(username, password);
-
-                    if (dto != null) {
-                        url = SEARCH_PAGE;
-
-                        // Create new session and add RegistrationDTO attribute
-                        HttpSession session = request.getSession();
-                        session.setAttribute("USER", dto);
-                        
-                        break;
-                    }//end dto has existed
-                }//end traverse cookies
-            }//end cookies have existed
+            //1. Goes to Cart's place
+            HttpSession session = request.getSession();
+            //2. Tackes Cart
+            Cart cart = (Cart) session.getAttribute("CART");
+            if (cart == null) {
+                cart = new Cart();
+            }
+            //3. Takes item 
+            String sku = request.getParameter("txtSku");
+            
+            //4. Drops item to Cart
+            cart.addItemToCart(sku);
+            session.setAttribute("CART", cart);
         } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
             response.sendError(500);
+        } catch (NotEnoughQuantityException ex) {
+            // because if not enough quantity, button AddToCart will disable
+            // this exception only catch when user request by custom url
+            // So, only need redirect agian to Shop page without error notification
         } finally {
-            response.sendRedirect(url);
+            response.sendRedirect(LOAD_SHOP_CONTROLLER);
         }
-        
     }
-
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

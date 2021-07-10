@@ -6,27 +6,21 @@
 package kylq.controller;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-import javax.naming.NamingException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import kylq.product.ProductDAO;
-import kylq.product.ProductDTO;
-import org.apache.log4j.Logger;
+import javax.servlet.http.HttpSession;
+import kylq.registration.RegistrationDTO;
+
 /**
  *
  * @author tackedev
  */
-public class LoadShopServlet extends HttpServlet {
+public class AuthLogoutServlet extends HttpServlet {
     
-    private final Logger LOGGER = Logger.getLogger(LoadShopServlet.class);
-    
-    private final String SHOP_PAGE = "shopPage";
+    private final String LOGIN_PAGE = "login";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,23 +34,28 @@ public class LoadShopServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-
+        String url = LOGIN_PAGE;
+        
         try {
-            //call DAO to get Product List
-            ProductDAO dao = new ProductDAO();
-            List<ProductDTO> productList = dao.getProductList();
+            //check existed session
+            HttpSession session = request.getSession(false);
+            if (session == null) {
+                return;
+            }//end session has existed
             
-            //set productList to requestScope
-            request.setAttribute("PRODUCT_LIST", productList);
-        } catch (NamingException | SQLException ex) {
-            LOGGER.error(ex);
-            response.sendError(500);
+            //get username from session
+            RegistrationDTO dto = (RegistrationDTO) session.getAttribute("USER");
+            String username = dto.getUsername();
+                    
+            //remove cookie by setMaxAge(0)
+            Cookie cookie = new Cookie(username, "");
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+            
+            //destroy Session
+            session.invalidate();
         } finally {
-            //get roadmap from application scope
-            Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
-            
-            RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(SHOP_PAGE));
-            rd.forward(request, response);
+            response.sendRedirect(url);
         }
     }
 

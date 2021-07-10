@@ -20,7 +20,7 @@ import kylq.registration.RegistrationInsertError;
  *
  * @author tackedev
  */
-public class ConfirmEditServlet extends HttpServlet {
+public class AccountEditConfirmServlet extends HttpServlet {
     
     private final String EDIT_ACCOUNT_PAGE = "editAccountPage";
     private final String CONFIRM_EDIT_PAGE = "confirmEditPage";

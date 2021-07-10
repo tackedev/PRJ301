@@ -6,21 +6,26 @@
 package kylq.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import kylq.registration.RegistrationDAO;
 import kylq.registration.RegistrationDTO;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author tackedev
  */
-public class LogoutServlet extends HttpServlet {
+public class AccountEditUpdateServlet extends HttpServlet {
     
-    private final String LOGIN_PAGE = "login";
+    private final Logger LOGGER = Logger.getLogger(AccountEditUpdateServlet.class);
+    
+    private final String SEARCH_ACCOUNT_CONTROLLER = "searchAccountAction";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,26 +39,27 @@ public class LogoutServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String url = LOGIN_PAGE;
+        HttpSession session = request.getSession();
+        //get LAST_SEARCH_VALUE from session scope
+        String lastSearchValue = (String) session.getAttribute("LAST_SEARCH_VALUE");
+        
+        String url = SEARCH_ACCOUNT_CONTROLLER 
+                + "?txtSearch=" + lastSearchValue;
         
         try {
-            //check existed session
-            HttpSession session = request.getSession(false);
-            if (session == null) {
-                return;
-            }//end session has existed
+            //Call DAO to update 
+            RegistrationDAO dao = new RegistrationDAO();
+            //get EDIT_USER from session scope
+            RegistrationDTO dto = (RegistrationDTO) session.getAttribute("EDIT_USER");
             
-            //get username from session
-            RegistrationDTO dto = (RegistrationDTO) session.getAttribute("USER");
-            String username = dto.getUsername();
-                    
-            //remove cookie by setMaxAge(0)
-            Cookie cookie = new Cookie(username, "");
-            cookie.setMaxAge(0);
-            response.addCookie(cookie);
-            
-            //destroy Session
-            session.invalidate();
+            if (dao.updateEditRegistration(dto)) {
+                //clear EDIT_USER and LAST_SEARCH_VALUE attribute in session scope
+                session.removeAttribute("EDIT_USER");
+                session.removeAttribute("LAST_SEARCH_VALUE");
+            }//end update successfully
+        } catch (NamingException | SQLException ex) {
+            LOGGER.error(ex);
+            response.sendError(500);
         } finally {
             response.sendRedirect(url);
         }

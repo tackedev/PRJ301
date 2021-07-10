@@ -22,11 +22,11 @@ import org.apache.log4j.Logger;
  *
  * @author tackedev
  */
-public class LoginServlet extends HttpServlet {
+public class AuthAutoLoginServlet extends HttpServlet {
     
-    private final Logger LOGGER = Logger.getLogger(LoginServlet.class);
+    private final Logger LOGGER = Logger.getLogger(AuthAutoLoginServlet.class);
     
-    private final String INVALID_PAGE = "invalid";
+    private final String LOGIN_PAGE = "login";
     private final String SEARCH_PAGE = "search";
 
     /**
@@ -41,34 +41,38 @@ public class LoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String url = INVALID_PAGE;
+        String url = LOGIN_PAGE;
         
-        String username = request.getParameter("txtUsername");
-        String password = request.getParameter("txtPassword");
+        Cookie[] cookies = request.getCookies();
         
         try {
-            // call DAO for getRegistration
-            RegistrationDAO dao = new RegistrationDAO();
-            RegistrationDTO dto = dao.getRegistrationByUsernameAndPassword(username, password);
-            
-            if (dto != null) {
-                url = SEARCH_PAGE;
-                
-                // Create new session and add RegistrationDTO attribute
-                HttpSession session = request.getSession();
-                session.setAttribute("USER", dto);
-                
-                //create account cookie for remind user
-                Cookie cookie = new Cookie(username, password);
-                cookie.setMaxAge(-1);   //means cookie existing until close browser
-                response.addCookie(cookie);
-            }//end dto has existed
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    String username = cookie.getName();
+                    String password = cookie.getValue();
+
+                    //call DAO for getRegistration
+                    RegistrationDAO dao = new RegistrationDAO();
+                    RegistrationDTO dto = dao.getRegistrationByUsernameAndPassword(username, password);
+
+                    if (dto != null) {
+                        url = SEARCH_PAGE;
+
+                        // Create new session and add RegistrationDTO attribute
+                        HttpSession session = request.getSession();
+                        session.setAttribute("USER", dto);
+                        
+                        break;
+                    }//end dto has existed
+                }//end traverse cookies
+            }//end cookies have existed
         } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
             response.sendError(500);
         } finally {
             response.sendRedirect(url);
         }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

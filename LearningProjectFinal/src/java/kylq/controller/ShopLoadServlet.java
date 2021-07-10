@@ -7,27 +7,26 @@ package kylq.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 import javax.naming.NamingException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import kylq.cart.Cart;
-import kylq.cart.NotEnoughQuantityException;
+import kylq.product.ProductDAO;
+import kylq.product.ProductDTO;
 import org.apache.log4j.Logger;
-
 /**
  *
  * @author tackedev
  */
-public class CheckoutServlet extends HttpServlet {
-
-    private final Logger LOGGER = Logger.getLogger(CheckoutServlet.class);
-
-    private final String VIEW_CART_PAGE = "viewCart";
-    private final String LOAD_SHOP_CONTROLLER = "shop";
-    private final String NOT_ENOUGH_QUANTITY_ERROR_PAGE = "notEnoughQuantityError";
+public class ShopLoadServlet extends HttpServlet {
+    
+    private final Logger LOGGER = Logger.getLogger(ShopLoadServlet.class);
+    
+    private final String SHOP_PAGE = "shopPage";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,43 +39,24 @@ public class CheckoutServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        String url = VIEW_CART_PAGE;
-
-        //goes to cart's place
-        HttpSession session = request.getSession(false);
+        
 
         try {
-            if (session == null) {
-                return;
-            }
-            //takes cart
-            Cart cart = (Cart) session.getAttribute("CART");
-            if (cart == null) {
-                return;
-            }
-            //call checkout
-            if (cart.checkout()) {
-                // checkout successfully
-                url = LOAD_SHOP_CONTROLLER;
-                // remove CART
-                session.removeAttribute("CART");
-            }
+            //call DAO to get Product List
+            ProductDAO dao = new ProductDAO();
+            List<ProductDTO> productList = dao.getProductList();
+            
+            //set productList to requestScope
+            request.setAttribute("PRODUCT_LIST", productList);
         } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
-            if (ex.getMessage().contains("The transaction ended in the trigger. The batch has been aborted")) {
-                // It is also Not enough quantity error
-                url = NOT_ENOUGH_QUANTITY_ERROR_PAGE;
-                session.removeAttribute("CART");
-            } else {
-                response.sendError(500);
-            }
-        } catch (NotEnoughQuantityException ex) {
-            url = NOT_ENOUGH_QUANTITY_ERROR_PAGE;
-            //because not enough quantity, so the Cart is invalid, we remove it and redirect to Shop page to update new product status
-            session.removeAttribute("CART");
+            response.sendError(500);
         } finally {
-            response.sendRedirect(url);
+            //get roadmap from application scope
+            Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
+            
+            RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(SHOP_PAGE));
+            rd.forward(request, response);
         }
     }
 

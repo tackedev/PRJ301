@@ -9,23 +9,25 @@ import java.io.IOException;
 import java.sql.SQLException;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import kylq.cart.Cart;
-import kylq.cart.NotEnoughQuantityException;
+import kylq.registration.RegistrationDAO;
+import kylq.registration.RegistrationDTO;
 import org.apache.log4j.Logger;
 
 /**
  *
  * @author tackedev
  */
-public class AddToCartServlet extends HttpServlet {
+public class AuthLoginServlet extends HttpServlet {
     
-    private final Logger LOGGER = Logger.getLogger(AddToCartServlet.class);
+    private final Logger LOGGER = Logger.getLogger(AuthLoginServlet.class);
     
-    private final String LOAD_SHOP_CONTROLLER = "shop";
+    private final String INVALID_PAGE = "invalid";
+    private final String SEARCH_PAGE = "search";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,32 +41,36 @@ public class AddToCartServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        String url = INVALID_PAGE;
+        
+        String username = request.getParameter("txtUsername");
+        String password = request.getParameter("txtPassword");
+        
         try {
-            //1. Goes to Cart's place
-            HttpSession session = request.getSession();
-            //2. Tackes Cart
-            Cart cart = (Cart) session.getAttribute("CART");
-            if (cart == null) {
-                cart = new Cart();
-            }
-            //3. Takes item 
-            String sku = request.getParameter("txtSku");
+            // call DAO for getRegistration
+            RegistrationDAO dao = new RegistrationDAO();
+            RegistrationDTO dto = dao.getRegistrationByUsernameAndPassword(username, password);
             
-            //4. Drops item to Cart
-            cart.addItemToCart(sku);
-            session.setAttribute("CART", cart);
+            if (dto != null) {
+                url = SEARCH_PAGE;
+                
+                // Create new session and add RegistrationDTO attribute
+                HttpSession session = request.getSession();
+                session.setAttribute("USER", dto);
+                
+                //create account cookie for remind user
+                Cookie cookie = new Cookie(username, password);
+                cookie.setMaxAge(-1);   //means cookie existing until close browser
+                response.addCookie(cookie);
+            }//end dto has existed
         } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
             response.sendError(500);
-        } catch (NotEnoughQuantityException ex) {
-            // because if not enough quantity, button AddToCart will disable
-            // this exception only catch when user request by custom url
-            // So, only need redirect agian to Shop page without error notification
         } finally {
-            response.sendRedirect(LOAD_SHOP_CONTROLLER);
+            response.sendRedirect(url);
         }
     }
-    
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

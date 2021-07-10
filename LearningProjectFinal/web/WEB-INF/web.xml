@@ -33,116 +33,116 @@
         <listener-class>kylq.listener.ContextListener</listener-class>
     </listener>
     <servlet>
-        <servlet-name>RemindUserServlet</servlet-name>
-        <servlet-class>kylq.controller.RemindUserServlet</servlet-class>
+        <servlet-name>AccountDeleteServlet</servlet-name>
+        <servlet-class>kylq.controller.AccountDeleteServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>kylq.controller.LoginServlet</servlet-class>
+        <servlet-name>AccountEditConfirmServlet</servlet-name>
+        <servlet-class>kylq.controller.AccountEditConfirmServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>SearchAccountServlet</servlet-name>
-        <servlet-class>kylq.controller.SearchAccountServlet</servlet-class>
+        <servlet-name>AccountEditServlet</servlet-name>
+        <servlet-class>kylq.controller.AccountEditServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>LogoutServlet</servlet-name>
-        <servlet-class>kylq.controller.LogoutServlet</servlet-class>
+        <servlet-name>AccountEditUpdateServlet</servlet-name>
+        <servlet-class>kylq.controller.AccountEditUpdateServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>RegisterServlet</servlet-name>
-        <servlet-class>kylq.controller.RegisterServlet</servlet-class>
+        <servlet-name>AccountSearchServlet</servlet-name>
+        <servlet-class>kylq.controller.AccountSearchServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>DeleteAccountServlet</servlet-name>
-        <servlet-class>kylq.controller.DeleteAccountServlet</servlet-class>
+        <servlet-name>AccountUpdateServlet</servlet-name>
+        <servlet-class>kylq.controller.AccountUpdateServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>UpdateAccountServlet</servlet-name>
-        <servlet-class>kylq.controller.UpdateAccountServlet</servlet-class>
+        <servlet-name>AuthAutoLoginServlet</servlet-name>
+        <servlet-class>kylq.controller.AuthAutoLoginServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>EditAccountServlet</servlet-name>
-        <servlet-class>kylq.controller.EditAccountServlet</servlet-class>
+        <servlet-name>AuthLoginServlet</servlet-name>
+        <servlet-class>kylq.controller.AuthLoginServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ConfirmEditServlet</servlet-name>
-        <servlet-class>kylq.controller.ConfirmEditServlet</servlet-class>
+        <servlet-name>AuthLogoutServlet</servlet-name>
+        <servlet-class>kylq.controller.AuthLogoutServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>UpdateEditServlet</servlet-name>
-        <servlet-class>kylq.controller.UpdateEditServlet</servlet-class>
+        <servlet-name>AuthRegisterServlet</servlet-name>
+        <servlet-class>kylq.controller.AuthRegisterServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>LoadShopServlet</servlet-name>
-        <servlet-class>kylq.controller.LoadShopServlet</servlet-class>
+        <servlet-name>CartCheckoutServlet</servlet-name>
+        <servlet-class>kylq.controller.CartCheckoutServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AddToCartServlet</servlet-name>
-        <servlet-class>kylq.controller.AddToCartServlet</servlet-class>
+        <servlet-name>CartRemoveItemsServlet</servlet-name>
+        <servlet-class>kylq.controller.CartRemoveItemsServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>RemoveItemsServlet</servlet-name>
-        <servlet-class>kylq.controller.RemoveItemsServlet</servlet-class>
+        <servlet-name>ShopAddToCartServlet</servlet-name>
+        <servlet-class>kylq.controller.ShopAddToCartServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>CheckoutServlet</servlet-name>
-        <servlet-class>kylq.controller.CheckoutServlet</servlet-class>
+        <servlet-name>ShopLoadServlet</servlet-name>
+        <servlet-class>kylq.controller.ShopLoadServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>RemindUserServlet</servlet-name>
-        <url-pattern>/RemindUserServlet</url-pattern>
+        <servlet-name>AccountDeleteServlet</servlet-name>
+        <url-pattern>/AccountDeleteServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>LoginServlet</servlet-name>
-        <url-pattern>/LoginServlet</url-pattern>
+        <servlet-name>AccountEditConfirmServlet</servlet-name>
+        <url-pattern>/AccountEditConfirmServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>SearchAccountServlet</servlet-name>
-        <url-pattern>/SearchAccountServlet</url-pattern>
+        <servlet-name>AccountEditServlet</servlet-name>
+        <url-pattern>/AccountEditServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>LogoutServlet</servlet-name>
-        <url-pattern>/LogoutServlet</url-pattern>
+        <servlet-name>AccountEditUpdateServlet</servlet-name>
+        <url-pattern>/AccountEditUpdateServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>RegisterServlet</servlet-name>
-        <url-pattern>/RegisterServlet</url-pattern>
+        <servlet-name>AccountSearchServlet</servlet-name>
+        <url-pattern>/AccountSearchServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>DeleteAccountServlet</servlet-name>
-        <url-pattern>/DeleteAccountServlet</url-pattern>
+        <servlet-name>AccountUpdateServlet</servlet-name>
+        <url-pattern>/AccountUpdateServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>UpdateAccountServlet</servlet-name>
-        <url-pattern>/UpdateAccountServlet</url-pattern>
+        <servlet-name>AuthAutoLoginServlet</servlet-name>
+        <url-pattern>/AuthAutoLoginServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>EditAccountServlet</servlet-name>
-        <url-pattern>/EditAccountServlet</url-pattern>
+        <servlet-name>AuthLoginServlet</servlet-name>
+        <url-pattern>/AuthLoginServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ConfirmEditServlet</servlet-name>
-        <url-pattern>/ConfirmEditServlet</url-pattern>
+        <servlet-name>AuthLogoutServlet</servlet-name>
+        <url-pattern>/AuthLogoutServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>UpdateEditServlet</servlet-name>
-        <url-pattern>/UpdateEditServlet</url-pattern>
+        <servlet-name>AuthRegisterServlet</servlet-name>
+        <url-pattern>/AuthRegisterServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>LoadShopServlet</servlet-name>
-        <url-pattern>/LoadShopServlet</url-pattern>
+        <servlet-name>CartCheckoutServlet</servlet-name>
+        <url-pattern>/CartCheckoutServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>AddToCartServlet</servlet-name>
-        <url-pattern>/AddToCartServlet</url-pattern>
+        <servlet-name>CartRemoveItemsServlet</servlet-name>
+        <url-pattern>/CartRemoveItemsServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>RemoveItemsServlet</servlet-name>
-        <url-pattern>/RemoveItemsServlet</url-pattern>
+        <servlet-name>ShopAddToCartServlet</servlet-name>
+        <url-pattern>/ShopAddToCartServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>CheckoutServlet</servlet-name>
-        <url-pattern>/CheckoutServlet</url-pattern>
+        <servlet-name>ShopLoadServlet</servlet-name>
+        <url-pattern>/ShopLoadServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

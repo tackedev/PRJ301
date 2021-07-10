@@ -6,28 +6,20 @@
 package kylq.controller;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Map;
-import javax.naming.NamingException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import kylq.registration.RegistrationDAO;
-import kylq.registration.RegistrationDTO;
-import org.apache.log4j.Logger;
+import kylq.cart.Cart;
 
 /**
  *
  * @author tackedev
  */
-public class EditAccountServlet extends HttpServlet {
-    
-    private final Logger LOGGER = Logger.getLogger(EditAccountServlet.class);
-    
-    private final String EDIT_ACCOUNT_PAGE = "editAccountPage";
+public class CartRemoveItemsServlet extends HttpServlet {
+
+    private final String VIEW_CART_PAGE = "viewCart";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,33 +32,29 @@ public class EditAccountServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        String username = request.getParameter("txtUsername");
-        String lastSearchValue = request.getParameter("txtSearch");
-        
-        String url = EDIT_ACCOUNT_PAGE;
-        
+
         try {
-            // Call DAO to get full RegistrationDTO
-            RegistrationDAO dao = new RegistrationDAO();
-            RegistrationDTO dto = dao.getRegistrationByUsername(username);
-            
-            //set dto to session scope
-            HttpSession session = request.getSession();
-            session.setAttribute("EDIT_USER", dto);
-            
-            session.setAttribute("LAST_SEARCH_VALUE", lastSearchValue);
-        } catch (NamingException | SQLException ex) {
-            LOGGER.error(ex);
-            response.sendError(500);
+            String[] removeSkus = request.getParameterValues("chkItem");
+            if (removeSkus == null) {
+                return;
+                //it will run finally block
+            }
+
+            // goes to cart's place
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                //takes cart
+                Cart cart = (Cart) session.getAttribute("CART");
+                if (cart != null) {
+                    for (String removeSku : removeSkus) {
+                        cart.removeItem(removeSku);
+                    }//end traverse removeSkus
+                    session.setAttribute("CART", cart);
+                }//end existed cart
+            }//end existed session
         } finally {
-            // get roadmap from application scope
-            Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
-            
-            RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
-            rd.forward(request, response);
+            response.sendRedirect(VIEW_CART_PAGE);
         }
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -14,21 +14,20 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import kylq.registration.RegistrationDAO;
 import kylq.registration.RegistrationDTO;
-import kylq.registration.RegistrationInsertError;
 import org.apache.log4j.Logger;
 
 /**
  *
  * @author tackedev
  */
-public class RegisterServlet extends HttpServlet {
+public class AccountEditServlet extends HttpServlet {
     
-    private final Logger LOGGER = Logger.getLogger(RegisterServlet.class);
+    private final Logger LOGGER = Logger.getLogger(AccountEditServlet.class);
     
-    private final String REGISTER_PAGE = "registerPage";
-    private final String LOGIN_PAGE = "login";
+    private final String EDIT_ACCOUNT_PAGE = "editAccountPage";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,66 +41,32 @@ public class RegisterServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String url = REGISTER_PAGE;
-        
         String username = request.getParameter("txtUsername");
-        String password = request.getParameter("txtPassword");
-        String confirm = request.getParameter("txtConfirm");
-        String fullName = request.getParameter("txtFullName");
+        String lastSearchValue = request.getParameter("txtSearch");
         
-        RegistrationInsertError errors = new RegistrationInsertError();
-        boolean foundError = false;
+        String url = EDIT_ACCOUNT_PAGE;
         
         try {
-            //1. Check all user errors
-            username = username.trim();
-            if (username.length() < 6 || username.length() > 20) {
-                foundError = true;
-                errors.setUsernameLengErr("Username is required from 6 to 20 characters");
-            }
-            if (password.length() < 6 || password.length() > 30) {
-                foundError = true;
-                errors.setPasswordLengthErr("Password is required from 6 to 30 characters");
-            } else if (!confirm.equals(password)) {
-                foundError = true;
-                errors.setConfirmNoMatch("Confirm must match password");
-            }
-            fullName = fullName.trim();
-            if (fullName.length() < 2 || fullName.length() > 50) {
-                foundError = true;
-                errors.setFullNameLengthErr("Fullname is required from 2 to 50 characters");
-            }
+            // Call DAO to get full RegistrationDTO
+            RegistrationDAO dao = new RegistrationDAO();
+            RegistrationDTO dto = dao.getRegistrationByUsername(username);
             
-            if (foundError) {
-                request.setAttribute("INSERT_ERRORS", errors);
-                request.setAttribute("USERNAME", username);
-                request.setAttribute("FULLNAME", fullName);
-            } else {
-                //2. Insert to DB - call DAO
-                RegistrationDAO dao = new RegistrationDAO();
-                RegistrationDTO dto = new RegistrationDTO(username, password, fullName, false);
-                
-                if (dao.createRegistration(dto)) {
-                    url = LOGIN_PAGE;
-                }
-            }
-        } catch (NamingException ex) {
+            //set dto to session scope
+            HttpSession session = request.getSession();
+            session.setAttribute("EDIT_USER", dto);
+            
+            session.setAttribute("LAST_SEARCH_VALUE", lastSearchValue);
+        } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
             response.sendError(500);
-        } catch (SQLException ex) {
-            LOGGER.error(ex);
-            String exMsg = ex.getMessage();
-            if (exMsg.contains("duplicate")) {
-                errors.setUsernameIsExisted("Username is duplicated");
-                request.setAttribute("INSERT_ERRORS", errors);
-            }
         } finally {
-            //get roadmap form Application Scope
+            // get roadmap from application scope
             Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
             
             RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
             rd.forward(request, response);
         }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

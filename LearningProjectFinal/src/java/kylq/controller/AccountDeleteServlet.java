@@ -6,20 +6,29 @@
 package kylq.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Map;
+import javax.naming.NamingException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import kylq.cart.Cart;
+import kylq.registration.DeleteRegistrationErrors;
+import kylq.registration.RegistrationDAO;
+import kylq.registration.RegistrationDTO;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author tackedev
  */
-public class RemoveItemsServlet extends HttpServlet {
-
-    private final String VIEW_CART_PAGE = "viewCart";
+public class AccountDeleteServlet extends HttpServlet {
+    
+    private final Logger LOGGER = Logger.getLogger(AccountDeleteServlet.class);
+    
+    private final String SEARCH_ACCOUNT_CONTROLLER = "searchAccountAction";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,28 +41,40 @@ public class RemoveItemsServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        
+        String username = request.getParameter("txtUsername");
+        
         try {
-            String[] removeSkus = request.getParameterValues("chkItem");
-            if (removeSkus == null) {
-                return;
-                //it will run finally block
+            //check deleteUser is not the Current User
+            //Get USER in session scope, don't need to check existed session or existed USER in session
+            //because have checked in Authentication Filter 
+            HttpSession session = request.getSession();
+            RegistrationDTO dto = (RegistrationDTO) session.getAttribute("USER");
+            
+            if (dto.getUsername().equals(username)) {
+                DeleteRegistrationErrors deleteError = new DeleteRegistrationErrors();
+                deleteError.setDeleteYourAccount("Cannot delete your account!");
+                request.setAttribute("DELETE_ACCOUNT_ERRORS", deleteError);
+                return; //run finally block
             }
-
-            // goes to cart's place
-            HttpSession session = request.getSession(false);
-            if (session != null) {
-                //takes cart
-                Cart cart = (Cart) session.getAttribute("CART");
-                if (cart != null) {
-                    for (String removeSku : removeSkus) {
-                        cart.removeItem(removeSku);
-                    }//end traverse removeSkus
-                    session.setAttribute("CART", cart);
-                }//end existed cart
-            }//end existed session
+            
+                
+            // Call DAO then call deleteRegistration
+            RegistrationDAO dao = new RegistrationDAO();
+            if (dao.deleteRegistration(username)) {
+                //delete successfully, reload Search page
+            }
+        } catch (NamingException | SQLException ex) {
+            LOGGER.error(ex);
+            response.sendError(500);
         } finally {
-            response.sendRedirect(VIEW_CART_PAGE);
+            //get roadmap from application scope
+            Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
+            String url = roadmap.get(SEARCH_ACCOUNT_CONTROLLER);
+            //don't need to add txtSearch=lastSearchValue because we use forward, request param txtSearch is still existed
+            
+            RequestDispatcher rd = request.getRequestDispatcher(url);
+            rd.forward(request, response);
         }
     }
 

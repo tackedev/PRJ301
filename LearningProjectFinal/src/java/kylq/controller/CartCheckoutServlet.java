@@ -13,19 +13,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import kylq.registration.RegistrationDAO;
-import kylq.registration.RegistrationDTO;
+import kylq.cart.Cart;
+import kylq.cart.NotEnoughQuantityException;
 import org.apache.log4j.Logger;
 
 /**
  *
  * @author tackedev
  */
-public class UpdateEditServlet extends HttpServlet {
-    
-    private final Logger LOGGER = Logger.getLogger(UpdateEditServlet.class);
-    
-    private final String SEARCH_ACCOUNT_CONTROLLER = "searchAccountAction";
+public class CartCheckoutServlet extends HttpServlet {
+
+    private final Logger LOGGER = Logger.getLogger(CartCheckoutServlet.class);
+
+    private final String VIEW_CART_PAGE = "viewCart";
+    private final String LOAD_SHOP_CONTROLLER = "shop";
+    private final String NOT_ENOUGH_QUANTITY_ERROR_PAGE = "notEnoughQuantityError";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,28 +40,41 @@ public class UpdateEditServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        HttpSession session = request.getSession();
-        //get LAST_SEARCH_VALUE from session scope
-        String lastSearchValue = (String) session.getAttribute("LAST_SEARCH_VALUE");
-        
-        String url = SEARCH_ACCOUNT_CONTROLLER 
-                + "?txtSearch=" + lastSearchValue;
-        
+
+        String url = VIEW_CART_PAGE;
+
+        //goes to cart's place
+        HttpSession session = request.getSession(false);
+
         try {
-            //Call DAO to update 
-            RegistrationDAO dao = new RegistrationDAO();
-            //get EDIT_USER from session scope
-            RegistrationDTO dto = (RegistrationDTO) session.getAttribute("EDIT_USER");
-            
-            if (dao.updateEditRegistration(dto)) {
-                //clear EDIT_USER and LAST_SEARCH_VALUE attribute in session scope
-                session.removeAttribute("EDIT_USER");
-                session.removeAttribute("LAST_SEARCH_VALUE");
-            }//end update successfully
+            if (session == null) {
+                return;
+            }
+            //takes cart
+            Cart cart = (Cart) session.getAttribute("CART");
+            if (cart == null) {
+                return;
+            }
+            //call checkout
+            if (cart.checkout()) {
+                // checkout successfully
+                url = LOAD_SHOP_CONTROLLER;
+                // remove CART
+                session.removeAttribute("CART");
+            }
         } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
-            response.sendError(500);
+            if (ex.getMessage().contains("The transaction ended in the trigger. The batch has been aborted")) {
+                // It is also Not enough quantity error
+                url = NOT_ENOUGH_QUANTITY_ERROR_PAGE;
+                session.removeAttribute("CART");
+            } else {
+                response.sendError(500);
+            }
+        } catch (NotEnoughQuantityException ex) {
+            url = NOT_ENOUGH_QUANTITY_ERROR_PAGE;
+            //because not enough quantity, so the Cart is invalid, we remove it and redirect to Shop page to update new product status
+            session.removeAttribute("CART");
         } finally {
             response.sendRedirect(url);
         }

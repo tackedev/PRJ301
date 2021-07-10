@@ -22,9 +22,9 @@ import org.apache.log4j.Logger;
  *
  * @author tackedev
  */
-public class UpdateAccountServlet extends HttpServlet {
+public class AccountUpdateServlet extends HttpServlet {
     
-    private final Logger LOGGER = Logger.getLogger(UpdateAccountServlet.class);
+    private final Logger LOGGER = Logger.getLogger(AccountUpdateServlet.class);
     
     private final String SEARCH_ACCOUNT_CONTROLLER = "searchAccountAction";
 
