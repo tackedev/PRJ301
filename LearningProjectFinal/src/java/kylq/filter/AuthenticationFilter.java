@@ -76,23 +76,6 @@ public class AuthenticationFilter implements Filter {
         } else {
             chain.doFilter(request, response);
         }
-        
-//        //check existed session and existed authenticated user
-//        
-//        if (session == null || session.getAttribute("USER") == null) {
-//            //forward to login page
-//            RequestDispatcher rd = httpRequest.getRequestDispatcher(roadmap.get("login"));
-//            rd.forward(request, response);
-//        } else {
-//            //when existed authenticated user, not permiss accessing login page
-//            String resource = httpRequest.getServerName().substring(1);
-//                        
-//            if (resource.equals("login")) {
-//                httpResponse.sendRedirect("search");
-//            } else {
-//                chain.doFilter(request, response);
-//            }            
-//        }
     }
 
     /**
