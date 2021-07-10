@@ -22,17 +22,17 @@
             Username ${dto.username}<br/>
             <input type="hidden" name="txtUsername" value="${dto.username}" />
             Password <input type="text" name="txtPassword" value="${dto.password}" /> (6 - 30 chars)<br/>
-            
+
             <c:if test="${not empty errors.passwordLengthErr}" >
                 <font color="red">${errors.passwordLengthErr}</font><br/>
             </c:if>
-            
-            Full name <input type="text" name="txtFullName" value="${dto.lastName}" /> (2 - 50 chars)<br/>
-            
+
+            Fullname <input type="text" name="txtFullName" value="${dto.lastName}" /> (2 - 50 chars)<br/>
+
             <c:if test="${not empty errors.fullNameLengthErr}" >
                 <font color="red">${errors.fullNameLengthErr}</font><br/>
             </c:if>
-            
+
             Role <input type="checkbox" name="chkRole" value="ON"
                         <c:if test="${dto.role}" >
                             checked="checked"
