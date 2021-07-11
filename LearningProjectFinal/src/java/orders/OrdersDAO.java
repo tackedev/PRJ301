@@ -19,7 +19,7 @@ import kylq.utils.DBHelpers;
  */
 public class OrdersDAO implements Serializable {
     
-    public int insertNewOrder(String customer) throws NamingException, SQLException {
+    public int insertNewOrder() throws NamingException, SQLException {
         Connection con = null;
         PreparedStatement stm = null;
         ResultSet rs = null;
@@ -29,13 +29,12 @@ public class OrdersDAO implements Serializable {
             con = DBHelpers.getConnection();
             if (con != null) {
                 //2. create sql string
-                String sql = "Insert Into Orders (customer, total) "
+                String sql = "Insert Into Orders (total) "
                            + "Output Inserted.id "
-                           + "Values (?, ?)";
+                           + "Values (?)";
                 //3. create statement
                 stm = con.prepareStatement(sql);
-                stm.setString(1, customer);
-                stm.setInt(2, 0);
+                stm.setInt(1, 0);
                 //4. execute
                  rs = stm.executeQuery();
                 //4. process

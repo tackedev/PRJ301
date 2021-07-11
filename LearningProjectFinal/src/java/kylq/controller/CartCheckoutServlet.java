@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import kylq.cart.Cart;
-import kylq.cart.CartErrors;
 import kylq.cart.NotEnoughQuantityException;
 import org.apache.log4j.Logger;
 
@@ -59,24 +58,17 @@ public class CartCheckoutServlet extends HttpServlet {
             if (cart == null) {
                 return;
             }
-            //check existed txtCustomer
-            String customer = request.getParameter("txtCustomer").trim();
-            if (customer == null || customer.trim().isEmpty()) {
-                url = CONFIRM_CHECKOUT_PAGE;
-                CartErrors errors = new CartErrors();
-                errors.setEmptyCustomer("Empty customer");
-                request.setAttribute("EMPTY_CUSTOMER_ERRORS", errors);
-                return;
-            }
             
             //call checkout
-            if (cart.checkout(customer)) {
+            if (cart.checkout()) {
                 // checkout successfully
                 url = LOAD_SHOP_CONTROLLER;
                 // remove CART
                 session.removeAttribute("CART");
             }
-        } catch (NamingException | SQLException ex) {
+        } catch (NamingException ex) {
+            LOGGER.error(ex);
+        } catch (SQLException ex) {
             LOGGER.error(ex);
             if (ex.getMessage().contains("The transaction ended in the trigger. The batch has been aborted")) {
                 // It is also Not enough quantity error

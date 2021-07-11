@@ -111,9 +111,9 @@ public class Cart implements Serializable {
         return true;
     }
 
-    private int createNewOrder(String customer) throws NamingException, SQLException {
+    private int createNewOrder() throws NamingException, SQLException {
         OrdersDAO dao = new OrdersDAO();
-        int newOrderId = dao.insertNewOrder(customer);
+        int newOrderId = dao.insertNewOrder();
         return newOrderId;
     }
 
@@ -138,7 +138,7 @@ public class Cart implements Serializable {
         return dao.insertOrderDetails(orderId, orderDetailList);
     }
 
-    public boolean checkout(String customer) throws NamingException, SQLException, NotEnoughQuantityException {
+    public boolean checkout() throws NamingException, SQLException, NotEnoughQuantityException {
         //check existed this.items
         if (this.items == null) {
             return false;
@@ -149,7 +149,7 @@ public class Cart implements Serializable {
         //if not enough, it will throw NotEnoughQuantityException
         
         //create new orders
-        int newOrderId = createNewOrder(customer);
+        int newOrderId = createNewOrder();
         //if there are some errors, it will throw exception
 
         //insert orders detail

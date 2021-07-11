@@ -20,59 +20,49 @@
         <c:if test="${not empty cart}">
             <c:set var="items" value="${cart.items}" />
             <c:if test="${not empty items}">
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="item" items="${items}" varStatus="counter">
+                            <c:set var="dto" value="${item.key}" />
+                            <c:set var="quantity" value="${item.value}" />
+                            <tr>
+                                <td align="right">
+                                    ${counter.count}.
+                                </td>
+                                <td>
+                                    ${dto.name}
+                                </td>
+                                <td align="right">
+                                    <fmt:formatNumber type = "currency" value="${dto.price}" maxFractionDigits="2" />
+                                </td>
+                                <td align="right">
+                                    ${quantity}
+                                </td>
+                                <td align="right">
+                                    <fmt:formatNumber type = "currency" value="${dto.price * quantity}" maxFractionDigits="2" />
+                                    <c:set var="totalOrder" value="${totalOrder + dto.price * quantity}" />
+                                </td>
+                            </tr>
+                        </c:forEach>
+                        <tr>
+                            <td colspan="3">
+                            </td>
+                            <td colspan="2">
+                                Total Order: <fmt:formatNumber type = "currency" value="${totalOrder}" maxFractionDigits="2" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
                 <form action="checkoutAction">
-                    <c:if test="${not empty sessionScope.USER}">
-                        Customer:  ${sessionScope.USER.lastName}
-                        <input type="hidden" name="txtCustomer" value="${sessionScope.USER.lastName}" />
-                    </c:if>
-                    <c:if test="${empty sessionScope.USER}">
-                        Customer:  <input type="text" name="txtCustomer" value="" />
-                    </c:if>
-                    <c:if test="${not empty requestScope.EMPTY_CUSTOMER_ERRORS.emptyCustomer}">
-                        <br/><font color="red">${requestScope.EMPTY_CUSTOMER_ERRORS.emptyCustomer}</font>
-                    </c:if>
-                    <table border="1">
-                        <thead>
-                            <tr>
-                                <th>No.</th>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:forEach var="item" items="${items}" varStatus="counter">
-                                <c:set var="dto" value="${item.key}" />
-                                <c:set var="quantity" value="${item.value}" />
-                                <tr>
-                                    <td align="right">
-                                        ${counter.count}.
-                                    </td>
-                                    <td>
-                                        ${dto.name}
-                                    </td>
-                                    <td align="right">
-                                        <fmt:formatNumber type = "currency" value="${dto.price}" maxFractionDigits="2" />
-                                    </td>
-                                    <td align="right">
-                                        ${quantity}
-                                    </td>
-                                    <td align="right">
-                                        <fmt:formatNumber type = "currency" value="${dto.price * quantity}" maxFractionDigits="2" />
-                                        <c:set var="totalOrder" value="${totalOrder + dto.price * quantity}" />
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                            <tr>
-                                <td colspan="3">
-                                </td>
-                                <td colspan="2">
-                                    Total Order: <fmt:formatNumber type = "currency" value="${totalOrder}" maxFractionDigits="2" />
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
                     <input type="submit" value="Checkout" />
                     <a href="viewCart"><button type="button">Cancel</button></a>
                 </form>
