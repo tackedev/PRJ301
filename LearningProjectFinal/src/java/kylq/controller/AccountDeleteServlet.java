@@ -43,6 +43,7 @@ public class AccountDeleteServlet extends HttpServlet {
             throws ServletException, IOException {
         
         String username = request.getParameter("txtUsername");
+        boolean foundErrors = false;
         
         try {
             //check deleteUser is not the Current User
@@ -61,20 +62,22 @@ public class AccountDeleteServlet extends HttpServlet {
                 
             // Call DAO then call deleteRegistration
             RegistrationDAO dao = new RegistrationDAO();
-            if (dao.deleteRegistration(username)) {
-                //delete successfully, reload Search page
-            }
+            dao.deleteRegistration(username);
         } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
-            response.sendError(500);
+            foundErrors = true;
         } finally {
-            //get roadmap from application scope
-            Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
-            String url = roadmap.get(SEARCH_ACCOUNT_CONTROLLER);
-            //don't need to add txtSearch=lastSearchValue because we use forward, request param txtSearch is still existed
-            
-            RequestDispatcher rd = request.getRequestDispatcher(url);
-            rd.forward(request, response);
+            if (!foundErrors) {
+                //get roadmap from application scope
+                Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
+                String url = roadmap.get(SEARCH_ACCOUNT_CONTROLLER);
+                //don't need to add txtSearch=lastSearchValue because we use forward, request param txtSearch is still existed
+
+                RequestDispatcher rd = request.getRequestDispatcher(url);
+                rd.forward(request, response);
+            } else {
+                response.sendError(500);
+            }
         }
     }
 

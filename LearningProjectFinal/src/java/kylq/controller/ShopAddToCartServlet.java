@@ -39,6 +39,8 @@ public class ShopAddToCartServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        boolean foundErrors = false;
+        
         try {
             //1. Goes to Cart's place
             HttpSession session = request.getSession();
@@ -55,13 +57,17 @@ public class ShopAddToCartServlet extends HttpServlet {
             session.setAttribute("CART", cart);
         } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
-            response.sendError(500);
+            foundErrors = true;
         } catch (NotEnoughQuantityException ex) {
             // because if not enough quantity, button AddToCart will disable
             // this exception only catch when user request by custom url
             // So, only need redirect agian to Shop page without error notification
         } finally {
-            response.sendRedirect(LOAD_SHOP_CONTROLLER);
+            if (!foundErrors) {
+                response.sendRedirect(LOAD_SHOP_CONTROLLER);
+            } else {
+                response.sendError(500);
+            }
         }
     }
     

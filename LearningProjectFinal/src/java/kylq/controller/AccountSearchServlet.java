@@ -41,6 +41,8 @@ public class AccountSearchServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        boolean foundErrors = false;
+        
         String url = SEARCH_PAGE;
         
         String searchValue = request.getParameter("txtSearch");
@@ -56,13 +58,17 @@ public class AccountSearchServlet extends HttpServlet {
             }
         } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
-            response.sendError(500);
+            foundErrors = true;
         } finally {
-            //Get roadmap form apllication scope
-            Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
-            
-            RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
-            rd.forward(request, response);
+            if (!foundErrors) {
+                //Get roadmap form apllication scope
+                Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
+
+                RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
+                rd.forward(request, response);
+            } else {
+                response.sendError(500);
+            }
         }
         
     }

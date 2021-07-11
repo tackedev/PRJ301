@@ -39,6 +39,8 @@ public class AccountEditUpdateServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        boolean foundErrors = false;
+        
         HttpSession session = request.getSession();
         //get LAST_SEARCH_VALUE from session scope
         String lastSearchValue = (String) session.getAttribute("LAST_SEARCH_VALUE");
@@ -59,9 +61,14 @@ public class AccountEditUpdateServlet extends HttpServlet {
             }//end update successfully
         } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
-            response.sendError(500);
+            foundErrors = true;
         } finally {
-            response.sendRedirect(url);
+            if (!foundErrors) {
+                response.sendRedirect(url);
+            } else {
+                response.sendError(500);
+            }
+            
         }
     }
 

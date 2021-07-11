@@ -40,6 +40,8 @@ public class AccountUpdateServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        boolean foundErrors = false;
+        
         String username = request.getParameter("txtUsername");
         String password = request.getParameter("txtPassword");
         Boolean role = request.getParameter("chkRole") != null;
@@ -60,15 +62,19 @@ public class AccountUpdateServlet extends HttpServlet {
             }
         } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
-            response.sendError(500);
+            foundErrors = true;
         } finally {
-            //get roadmap from application scope
-            Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
-            String url = roadmap.get(SEARCH_ACCOUNT_CONTROLLER);
-            //don't need to add txtSearch=lastSearchValue because we use forward, request param txtSearch is still existed
-            
-            RequestDispatcher rd = request.getRequestDispatcher(url);
-            rd.forward(request, response);
+            if (!foundErrors) {
+                //get roadmap from application scope
+                Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
+                String url = roadmap.get(SEARCH_ACCOUNT_CONTROLLER);
+                //don't need to add txtSearch=lastSearchValue because we use forward, request param txtSearch is still existed
+
+                RequestDispatcher rd = request.getRequestDispatcher(url);
+                rd.forward(request, response);
+            } else {
+                response.sendError(500);
+            }
         }
         
     }

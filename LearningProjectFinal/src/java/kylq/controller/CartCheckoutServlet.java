@@ -42,7 +42,9 @@ public class CartCheckoutServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        
+        boolean foundErrors = false;
+        
         String url = VIEW_CART_PAGE;
 
         //goes to cart's place
@@ -68,6 +70,7 @@ public class CartCheckoutServlet extends HttpServlet {
             }
         } catch (NamingException ex) {
             LOGGER.error(ex);
+            foundErrors = true;
         } catch (SQLException ex) {
             LOGGER.error(ex);
             if (ex.getMessage().contains("The transaction ended in the trigger. The batch has been aborted")) {
@@ -77,7 +80,7 @@ public class CartCheckoutServlet extends HttpServlet {
                 error.setMsg("Not enough quantity. Please go to shop page and check newest product quantity status!");
                 request.setAttribute("NOT_ENOUGH_QUANTITY_ERROR", error);
             } else {
-                response.sendError(500);
+                foundErrors = true;
             }
         } catch (NotEnoughQuantityException ex) {
             url = VIEW_CART_PAGE;
@@ -85,10 +88,14 @@ public class CartCheckoutServlet extends HttpServlet {
             error.setMsg("Not enough " + ex.getMessage() + " quantity. Please go to shop page and check newest product quantity status!");
             request.setAttribute("NOT_ENOUGH_QUANTITY_ERROR", error);
         } finally {
-            //get roadmap from application scope
-            Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
-            RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
-            rd.forward(request, response);
+            if (!foundErrors) {
+                //get roadmap from application scope
+                Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
+                RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
+                rd.forward(request, response);
+            } else {
+                response.sendError(500);
+            }
             
         }
     }

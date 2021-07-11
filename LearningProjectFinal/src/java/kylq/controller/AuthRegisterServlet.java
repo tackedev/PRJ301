@@ -42,6 +42,8 @@ public class AuthRegisterServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        boolean foundErrors = false;
+        
         String url = REGISTER_PAGE;
         
         String username = request.getParameter("txtUsername");
@@ -87,20 +89,26 @@ public class AuthRegisterServlet extends HttpServlet {
             }
         } catch (NamingException ex) {
             LOGGER.error(ex);
-            response.sendError(500);
+            foundErrors = true;
         } catch (SQLException ex) {
             LOGGER.error(ex);
             String exMsg = ex.getMessage();
             if (exMsg.contains("duplicate")) {
                 errors.setUsernameIsExisted("Username is duplicated");
                 request.setAttribute("INSERT_ERRORS", errors);
+            } else {
+                foundErrors = true;
             }
         } finally {
-            //get roadmap form Application Scope
-            Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
-            
-            RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
-            rd.forward(request, response);
+            if (!foundErrors) {
+                //get roadmap form Application Scope
+                Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
+
+                RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
+                rd.forward(request, response);
+            } else {
+                response.sendError(500);
+            }
         }
     }
 

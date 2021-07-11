@@ -41,6 +41,8 @@ public class AuthLoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        boolean foundErrors = false;
+        
         String url = INVALID_PAGE;
         
         String username = request.getParameter("txtUsername");
@@ -65,9 +67,14 @@ public class AuthLoginServlet extends HttpServlet {
             }//end dto has existed
         } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
-            response.sendError(500);
+            foundErrors = true;
         } finally {
-            response.sendRedirect(url);
+            if (!foundErrors) {
+                response.sendRedirect(url);
+            } else {
+                response.sendError(500);
+            }
+            
         }
     }
 

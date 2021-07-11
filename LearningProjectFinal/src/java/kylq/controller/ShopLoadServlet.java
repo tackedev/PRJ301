@@ -40,6 +40,7 @@ public class ShopLoadServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        boolean foundErrors = false;
 
         try {
             //call DAO to get Product List
@@ -50,13 +51,17 @@ public class ShopLoadServlet extends HttpServlet {
             request.setAttribute("PRODUCT_LIST", productList);
         } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
-            response.sendError(500);
+            foundErrors = true;
         } finally {
-            //get roadmap from application scope
-            Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
-            
-            RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(SHOP_PAGE));
-            rd.forward(request, response);
+            if (!foundErrors) {
+                //get roadmap from application scope
+                Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
+
+                RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(SHOP_PAGE));
+                rd.forward(request, response);
+            } else {
+                response.sendError(500);
+            }
         }
     }
 

@@ -41,6 +41,8 @@ public class AuthAutoLoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        boolean foundErrors = false;
+        
         String url = LOGIN_PAGE;
         
         Cookie[] cookies = request.getCookies();
@@ -68,9 +70,13 @@ public class AuthAutoLoginServlet extends HttpServlet {
             }//end cookies have existed
         } catch (NamingException | SQLException ex) {
             LOGGER.error(ex);
-            response.sendError(500);
+            foundErrors = true;
         } finally {
-            response.sendRedirect(url);
+            if (!foundErrors) {
+                response.sendRedirect(url);
+            } else {
+                response.sendError(500);
+            }
         }
         
     }
