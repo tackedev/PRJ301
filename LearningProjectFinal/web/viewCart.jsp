@@ -6,6 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -37,23 +38,23 @@
                                 <c:set var="dto" value="${item.key}" />
                                 <c:set var="quantity" value="${item.value}" />
                                 <tr>
-                                    <td>
+                                    <td align="right">
                                         ${counter.count}.
                                     </td>
                                     <td>
                                         ${dto.name}
                                     </td>
-                                    <td>
-                                        ${dto.price}
+                                    <td align="right">
+                                        <fmt:formatNumber type = "currency" value="${dto.price}" maxFractionDigits="2" />
                                     </td>
-                                    <td>
+                                    <td align="right">
                                         ${quantity}
                                     </td>
                                     <td>
                                         <input type="checkbox" name="chkItem" value="${dto.sku}" />
                                     </td>
-                                    <td>
-                                        ${dto.price * quantity}
+                                    <td align="right">
+                                        <fmt:formatNumber type = "currency" value="${dto.price * quantity}" maxFractionDigits="2" />
                                     </td>
                                 </tr>
                             </c:forEach>

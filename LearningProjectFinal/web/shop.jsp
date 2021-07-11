@@ -6,6 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -34,19 +35,19 @@
             <tbody>
                 <c:forEach var="dto" items="${productList}" varStatus="counter" >
                     <tr>
-                        <td>
+                        <td align="right">
                             ${counter.count}.
                         </td>
                         <td>
                             ${dto.name}
                         </td>
-                        <td>
-                            ${dto.price}
+                        <td align="right">
+                            <fmt:formatNumber type = "currency" value="${dto.price}" maxFractionDigits="2" />
                         </td>
                         <td>
                             ${dto.description}
                         </td>
-                        <td>
+                        <td align="right">
                             <!--Display quantity after minus quantity in Cart-->
                             <c:set var="remainQuantity" value="${dto.quantity - currentCart.getItemQuantityBySku(dto.sku)}" />
                             ${remainQuantity}

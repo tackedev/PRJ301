@@ -49,7 +49,7 @@
                         <c:forEach var="dto" items="${result}" varStatus="counter" >
                         <form action="updateAccountAction" method="POST">
                             <tr>
-                                <td>
+                                <td align="right">
                                     ${counter.count}.
                                 </td>
                                 <td>

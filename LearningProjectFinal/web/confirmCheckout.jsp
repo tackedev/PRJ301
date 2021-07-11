@@ -6,6 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -45,20 +46,20 @@
                                 <c:set var="dto" value="${item.key}" />
                                 <c:set var="quantity" value="${item.value}" />
                                 <tr>
-                                    <td>
+                                    <td align="right">
                                         ${counter.count}.
                                     </td>
                                     <td>
                                         ${dto.name}
                                     </td>
-                                    <td>
-                                        ${dto.price}
+                                    <td align="right">
+                                        <fmt:formatNumber type = "currency" value="${dto.price}" maxFractionDigits="2" />
                                     </td>
-                                    <td>
+                                    <td align="right">
                                         ${quantity}
                                     </td>
-                                    <td>
-                                        ${dto.price * quantity}
+                                    <td align="right">
+                                        <fmt:formatNumber type = "currency" value="${dto.price * quantity}" maxFractionDigits="2" />
                                         <c:set var="totalOrder" value="${totalOrder + dto.price * quantity}" />
                                     </td>
                                 </tr>
@@ -67,7 +68,7 @@
                                 <td colspan="3">
                                 </td>
                                 <td colspan="2">
-                                    Total Order: ${totalOrder}
+                                    Total Order: <fmt:formatNumber type = "currency" value="${totalOrder}" maxFractionDigits="2" />
                                 </td>
                             </tr>
                         </tbody>
