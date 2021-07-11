@@ -13,6 +13,11 @@
         <title>Edit Account</title>
     </head>
     <body>
+        <c:url var="backToSearchPageLink" value="searchAccountAction">
+            <c:param name="txtSearch" value="${sessionScope.LAST_SEARCH_VALUE}" />
+        </c:url>
+        <a href="${backToSearchPageLink}">Back to Search page</a>
+        
         <h1>Edit account page</h1>
 
         <c:set var="dto" value="${sessionScope.EDIT_USER}" />
