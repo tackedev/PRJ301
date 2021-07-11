@@ -20,7 +20,8 @@
 
         <c:set var="productList" value="${requestScope.PRODUCT_LIST}" />
         <c:set var="currentCart" value="${sessionScope.CART}" />
-
+        
+        <font color="blue">${requestScope.CHECKOUT_SUCCESSFULLY}</font>
         <table border="1">
             <thead>
                 <tr>
@@ -56,7 +57,7 @@
                             <form action="addToCart" >
                                 <input type="hidden" name="txtSku" value="${dto.sku}" />
                                 <input type="submit" value="Add to cart"
-                                       <c:if test="${remainQuantity == 0}" >
+                                       <c:if test="${remainQuantity <= 0}" >
                                            disabled
                                        </c:if>
                                        />

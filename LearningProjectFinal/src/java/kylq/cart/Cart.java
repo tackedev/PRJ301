@@ -105,7 +105,7 @@ public class Cart implements Serializable {
             ProductDTO productDTO = productDAO.getProductBySku(item.getSku());
             
             if (productDTO.getQuantity() < items.get(item)) {
-                throw new NotEnoughQuantityException();
+                throw new NotEnoughQuantityException(item.getName());
             }
         }
         return true;

@@ -22,6 +22,9 @@
             <c:set var="items" value="${cart.items}" />
             <c:if test="${not empty items}">
                 <form action="removeItems">
+                    <c:if test="${not empty requestScope.NOT_ENOUGH_QUANTITY_ERROR}" >
+                        <font color="red">${requestScope.NOT_ENOUGH_QUANTITY_ERROR.msg}</font>
+                    </c:if>
                     <table border="1">
                         <thead>
                             <tr>

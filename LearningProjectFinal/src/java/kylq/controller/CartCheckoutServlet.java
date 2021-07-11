@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import kylq.cart.Cart;
+import kylq.cart.NotEnoughQuantityError;
 import kylq.cart.NotEnoughQuantityException;
 import org.apache.log4j.Logger;
 
@@ -27,10 +28,8 @@ public class CartCheckoutServlet extends HttpServlet {
 
     private final Logger LOGGER = Logger.getLogger(CartCheckoutServlet.class);
     
-    private final String CONFIRM_CHECKOUT_PAGE = "checkout";
     private final String VIEW_CART_PAGE = "viewCart";
     private final String LOAD_SHOP_CONTROLLER = "shop";
-    private final String NOT_ENOUGH_QUANTITY_ERROR_PAGE = "notEnoughQuantityError";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -63,6 +62,7 @@ public class CartCheckoutServlet extends HttpServlet {
             if (cart.checkout()) {
                 // checkout successfully
                 url = LOAD_SHOP_CONTROLLER;
+                request.setAttribute("CHECKOUT_SUCCESSFULLY", "Checkout Successfully!!!");
                 // remove CART
                 session.removeAttribute("CART");
             }
@@ -72,24 +72,24 @@ public class CartCheckoutServlet extends HttpServlet {
             LOGGER.error(ex);
             if (ex.getMessage().contains("The transaction ended in the trigger. The batch has been aborted")) {
                 // It is also Not enough quantity error
-                url = NOT_ENOUGH_QUANTITY_ERROR_PAGE;
-                session.removeAttribute("CART");
+                url = VIEW_CART_PAGE;
+                NotEnoughQuantityError error = new NotEnoughQuantityError();
+                error.setMsg("Not enough quantity. Please go to shop page and check newest product quantity status!");
+                request.setAttribute("NOT_ENOUGH_QUANTITY_ERROR", error);
             } else {
                 response.sendError(500);
             }
         } catch (NotEnoughQuantityException ex) {
-            url = NOT_ENOUGH_QUANTITY_ERROR_PAGE;
-            //because not enough quantity, so the Cart is invalid, we remove it and redirect to Shop page to update new product status
-            session.removeAttribute("CART");
+            url = VIEW_CART_PAGE;
+            NotEnoughQuantityError error = new NotEnoughQuantityError();
+            error.setMsg("Not enough " + ex.getMessage() + " quantity. Please go to shop page and check newest product quantity status!");
+            request.setAttribute("NOT_ENOUGH_QUANTITY_ERROR", error);
         } finally {
-            if (url.equals(CONFIRM_CHECKOUT_PAGE)) {
-                //get roadmap from application scope
-                Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
-                RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
-                rd.forward(request, response);
-            } else {
-                response.sendRedirect(url);
-            }
+            //get roadmap from application scope
+            Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
+            RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
+            rd.forward(request, response);
+            
         }
     }
 
