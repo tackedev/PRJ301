@@ -96,6 +96,8 @@ public class AuthRegisterServlet extends HttpServlet {
             if (exMsg.contains("duplicate")) {
                 errors.setUsernameIsExisted("Username is duplicated");
                 request.setAttribute("INSERT_ERRORS", errors);
+                request.setAttribute("USERNAME", username);
+                request.setAttribute("FULLNAME", fullName);
             } else {
                 foundErrors = true;
             }
