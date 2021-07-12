@@ -70,7 +70,7 @@ public class CheckoutServlet extends HttpServlet {
                             orderDetailList.add(dto);
                         }//end traverse items
                         
-                        //write to DB                        
+                        //write to DB
                         if (dao.addOrderDetails(orderDetailList)) {
                             url = "Dispatcher?btnAction=ViewOnlineShopping";
                         }
