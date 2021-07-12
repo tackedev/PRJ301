@@ -62,11 +62,19 @@ public class AccountEditConfirmServlet extends HttpServlet {
             url = CONFIRM_EDIT_PAGE;
         }
         
-        //get roadmap form application scope
-        Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
+        if (url.equals(CONFIRM_EDIT_PAGE)) {
+            //when no errors occurred
+            //redirect to clear POST data (fix POST/REDIRECT/GET)
+            response.sendRedirect(url);
+        } else {
+            //when had some errors, forword back to edit page -> use forward to keep request scope existed
+  
+            //get roadmap form application scope
+            Map<String, String> roadmap = (Map<String, String>) request.getServletContext().getAttribute("ROAD_MAP");
 
-        RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
-        rd.forward(request, response);
+            RequestDispatcher rd = request.getRequestDispatcher(roadmap.get(url));
+            rd.forward(request, response);
+        }
     }
     
     private void processCancel(HttpServletRequest request, HttpServletResponse response) throws IOException {
