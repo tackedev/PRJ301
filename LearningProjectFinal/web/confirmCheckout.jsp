@@ -14,6 +14,13 @@
         <title>Confirm checkout</title>
     </head>
     <body>
+        <c:if test="${not empty sessionScope.CART.items}">
+            <a href="viewCart">Back to view cart</a>
+        </c:if>
+        <c:if test="${empty sessionScope.CART.items}">
+            <a href="shop">Back to shop page</a>
+        </c:if>
+        
         <h1>Confirm checkout</h1>
 
         <c:set var="cart" value="${sessionScope.CART}" />
@@ -72,6 +79,5 @@
         <c:if test="${empty items}">
             <h2>No cart is existed!!!</h2>
         </c:if>
-
     </body>
 </html>
