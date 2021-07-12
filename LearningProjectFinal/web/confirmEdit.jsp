@@ -13,6 +13,8 @@
         <title>Confirm edit</title>
     </head>
     <body>
+        <a href="editAccountPage">Back to edit page</a>
+        
         <h2>Check your edited infomation</h2>
 
         <c:set var="dto" value="${sessionScope.EDIT_USER}" />
